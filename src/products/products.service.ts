@@ -9,7 +9,6 @@ import { PrismaService } from '../prisma/prisma.service';
 import { CreateProductDto } from './dtos/create-product.dto';
 import { ProductQueryDto } from './dtos/product-query.dto';
 import { UpdateProductDto } from './dtos/update-product.dto';
-import { skip } from 'rxjs';
 import { Prisma } from 'generated/prisma';
 
 @Injectable()
@@ -45,9 +44,9 @@ export class ProductService {
     const where: Prisma.ProductWhereInput = {};
 
     // Search in name and description
-    if (search) {
+    if (search && search.trim()) {
       where.OR = [
-        { name: { contains: search, mode: 'insensitive' } },
+        { name: { contains: search.trim(), mode: 'insensitive' } },
         { description: { contains: search, mode: 'insensitive' } },
       ];
     }
@@ -72,12 +71,10 @@ export class ProductService {
 
     // Build order by clause
     const orderBy: Prisma.ProductOrderByWithRelationInput = {};
-    const validSortFields = ['name', 'price', 'createdAt'];
+    const validSortFields: string[] = ['name', 'price', 'createdAt'];
 
-    // Debug logging to inspect inputs
-    console.log('Sort inputs:', { sortBy, sortOrder, validSortFields });
     if (sortBy && sortOrder && validSortFields.includes(sortBy)) {
-      const normalizedSortOrder = sortOrder.toLowerCase();
+      const normalizedSortOrder: string = sortOrder.toLowerCase();
       if (['asc', 'desc'].includes(normalizedSortOrder)) {
         orderBy[sortBy] = normalizedSortOrder as 'asc' | 'desc';
       } else {
@@ -86,7 +83,6 @@ export class ProductService {
       }
     } else {
       // Default sorting if sortBy or sortOrder is invalid
-      console.log('Applying default sorting: createdAt DESC');
       orderBy.createdAt = 'desc';
     }
 

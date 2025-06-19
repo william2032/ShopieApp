@@ -12,6 +12,7 @@ import {
   Request,
   HttpStatus,
   HttpCode,
+  ValidationPipe,
 } from '@nestjs/common';
 import { ProductService } from './products.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
@@ -24,6 +25,10 @@ import { ProductQueryDto } from './dtos/product-query.dto';
 import { UpdateProductDto } from './dtos/update-product.dto';
 import { Roles } from '../auth/decorators/role-decorator';
 
+interface RawQueryParams {
+  q?: string;
+  [key: string]: string | undefined;
+}
 @Controller('products')
 export class ProductsController {
   constructor(private readonly productService: ProductService) {}
@@ -49,6 +54,23 @@ export class ProductsController {
   @Get()
   async findAll(@Query() query: ProductQueryDto) {
     return this.productService.findAll(query);
+  }
+
+  /**
+   * Search products (Public)
+   * GET /products/search?q=laptop
+   */
+  @Get('search')
+  async search(
+    @Query() rawQuery: RawQueryParams,
+    @Query(new ValidationPipe({ transform: true, whitelist: true })) query: ProductQueryDto,
+  ) {
+    const searchQuery = rawQuery.q || '';
+    if (!searchQuery) {
+      return { message: 'No search query provided' };
+    }
+    const queryDto: ProductQueryDto = { ...query, search: searchQuery };
+    return this.productService.findAll(queryDto);
   }
 
   /**
@@ -85,18 +107,5 @@ export class ProductsController {
   @HttpCode(HttpStatus.NO_CONTENT)
   async remove(@Param('id') id: string, @Request() req) {
     await this.productService.remove(id, req.user.id);
-  }
-
-  /**
-   * Search products (Public)
-   * GET /products/search?q=laptop
-   */
-  @Get('search/:query')
-  async search(
-    @Param('query') searchQuery: string,
-    @Query() options: ProductQueryDto,
-  ) {
-    const queryDto = { ...options, search: searchQuery };
-    return this.productService.findAll(queryDto);
   }
 }

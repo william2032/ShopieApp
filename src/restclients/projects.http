@@ -19,7 +19,7 @@ Authorization: Bearer {{token}}
 GET {{baseUrl}}/products
 
 ### 3. Get All Products with Filters
-GET {{baseUrl}}/products?minPrice=500&maxPrice=2000&sortBy=price&sortOrder=asc
+GET {{baseUrl}}/products?minPrice=50000&maxPrice=200000&sortBy=price&sortOrder=asc
 
 ### 4. Get One Product by ID
 GET {{baseUrl}}/products/{{product_id}}
@@ -40,4 +40,4 @@ DELETE {{baseUrl}}/products/{{product_id}}
 Authorization: Bearer {{token}}
 
 ### 7. Search Products
-GET {{baseUrl}}/products/search/gaming?minPrice=90000&maxPrice=609000
+GET {{baseUrl}}/products/search?q=m
