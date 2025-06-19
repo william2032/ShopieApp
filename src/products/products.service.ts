@@ -2,6 +2,7 @@ import {
   Injectable,
   NotFoundException,
   BadRequestException,
+  InternalServerErrorException,
 } from '@nestjs/common';
 import { Product } from './interfaces/product.interface';
 import { PrismaService } from '../prisma/prisma.service';
@@ -9,6 +10,7 @@ import { CreateProductDto } from './dtos/create-product.dto';
 import { ProductQueryDto } from './dtos/product-query.dto';
 import { UpdateProductDto } from './dtos/update-product.dto';
 import { skip } from 'rxjs';
+import { Prisma } from 'generated/prisma';
 
 @Injectable()
 export class ProductService {
@@ -40,7 +42,7 @@ export class ProductService {
     const { search, minPrice, maxPrice, sortBy, sortOrder } = query;
 
     // Build where clause for filtering
-    const where: any = {};
+    const where: Prisma.ProductWhereInput = {};
 
     // Search in name and description
     if (search) {
@@ -51,38 +53,67 @@ export class ProductService {
     }
 
     // Price range filtering
-    if (minPrice !== undefined || maxPrice !== undefined) {
+    const min =
+      minPrice !== undefined && !isNaN(minPrice) ? minPrice : undefined;
+    const max =
+      maxPrice !== undefined && !isNaN(maxPrice) ? maxPrice : undefined;
+
+    if (min !== undefined || max !== undefined) {
       where.price = {};
-      if (minPrice !== undefined) where.price.gte = minPrice;
-      if (maxPrice !== undefined) where.price.lte = maxPrice;
+
+      if (min !== undefined && !isNaN(min)) {
+        where.price.gte = min;
+      }
+
+      if (max !== undefined && !isNaN(max)) {
+        where.price.lte = max;
+      }
     }
 
     // Build order by clause
-    const orderBy: any = undefined;
-    if (sortBy && sortOrder) {
-      orderBy[sortBy] = sortOrder;
+    const orderBy: Prisma.ProductOrderByWithRelationInput = {};
+    const validSortFields = ['name', 'price', 'createdAt'];
+
+    // Debug logging to inspect inputs
+    console.log('Sort inputs:', { sortBy, sortOrder, validSortFields });
+    if (sortBy && sortOrder && validSortFields.includes(sortBy)) {
+      const normalizedSortOrder = sortOrder.toLowerCase();
+      if (['asc', 'desc'].includes(normalizedSortOrder)) {
+        orderBy[sortBy] = normalizedSortOrder as 'asc' | 'desc';
+      } else {
+        console.warn(`Invalid sortOrder: ${sortOrder}, defaulting to 'asc'`);
+        orderBy[sortBy] = 'asc';
+      }
+    } else {
+      // Default sorting if sortBy or sortOrder is invalid
+      console.log('Applying default sorting: createdAt DESC');
+      orderBy.createdAt = 'desc';
     }
 
     // Execute queries
-    const products = await Promise.all([
-      this.prisma.product.findMany({
-        where,
-        orderBy,
-        include: {
-          admin: {
-            select: {
-              id: true,
-              name: true,
-              email: true,
+    try {
+      const products = await Promise.all([
+        this.prisma.product.findMany({
+          where,
+          orderBy,
+          include: {
+            admin: {
+              select: {
+                id: true,
+                name: true,
+                email: true,
+              },
             },
           },
-        },
-      }),
-    ]);
-
-    return {
-      products,
-    };
+        }),
+      ]);
+      return { products };
+    } catch (e) {
+      console.error('Product query error:', e);
+      throw new InternalServerErrorException(
+        'Something went wrong while querying products.',
+      );
+    }
   }
 
   /**

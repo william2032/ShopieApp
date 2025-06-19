@@ -1,0 +1,43 @@
+### Set base URL and token
+@baseUrl = http://localhost:3000
+@token =eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIwM2RlMDQ1MS0yZTdhLTQzMzEtYjU2ZC1hY2Q4MzMyYmI2ODMiLCJlbWFpbCI6ImFkbWluQHNob3BpZS5jb20iLCJyb2xlIjoiQURNSU4iLCJpYXQiOjE3NTAzMzg5NjUsImV4cCI6MTc1MDQyNTM2NX0.b-oOyA0vufvi9rga67nkgSUAwR5PvuupHuw-MviRu4o
+@product_id =3bafb88b-ecda-4cf2-ac71-9f95c7d63118
+### 1. Create Product (Admin Only)
+POST {{baseUrl}}/products
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "name": "Mac Book",
+  "description": "High performance laptop for gaming",
+  "price": 187000,
+  "image": "https://picsum.photos/seed/laptop1/600/400",
+  "totalStock": 8
+}
+
+### 2. Get All Products
+GET {{baseUrl}}/products
+
+### 3. Get All Products with Filters
+GET {{baseUrl}}/products?minPrice=500&maxPrice=2000&sortBy=price&sortOrder=asc
+
+### 4. Get One Product by ID
+GET {{baseUrl}}/products/{{product_id}}
+
+### 5. Update Product
+PATCH {{baseUrl}}/products/{{product_id}}
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "name": " Mac Book",
+  "price": 180000,
+  "totalStock": 10
+}
+
+### 6. Delete Product
+DELETE {{baseUrl}}/products/{{product_id}}
+Authorization: Bearer {{token}}
+
+### 7. Search Products
+GET {{baseUrl}}/products/search/gaming?minPrice=90000&maxPrice=609000
