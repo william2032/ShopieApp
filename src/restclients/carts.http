@@ -1,0 +1,33 @@
+@baseurl = http://localhost:3000
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI1ZmQxNDc0ZC1mNDE5LTRiZWUtOTcyNy1iNjI4YTkwMzJlNGMiLCJlbWFpbCI6ImN1c3RvbWVyQHNob3BpZS5jb20iLCJyb2xlIjoiQ1VTVE9NRVIiLCJpYXQiOjE3NTAzNjMxMjksImV4cCI6MTc1MDQ0OTUyOX0.8CUPNk_QG2s_RVzpcFF3xyM-zxYMaW64xGdgZncVRx8
+@product_id = f3bbf6d1-e424-4009-b24e-ed66d525c4c7
+### Add item to cart
+POST {{baseurl}}/cart
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "productId": "f3bbf6d1-e424-4009-b24e-ed66d525c4c7",
+  "quantity": 2
+}
+
+### Get user's cart
+GET http://localhost:3000/cart
+Authorization: Bearer {{token}}
+
+### Update cart item quantity
+PATCH http://localhost:3000/cart/items/REPLACE_WITH_ITEM_ID
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "quantity": 5
+}
+
+### Remove item from cart
+DELETE http://localhost:3000/cart/items/d491c98e-b35f-46c8-a0e0-a28d77b99f53
+Authorization: Bearer {{token}}
+
+### Clear entire cart
+DELETE http://localhost:3000/cart
+Authorization: Bearer {{token}}
