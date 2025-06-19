@@ -63,6 +63,10 @@ Content-Type: application/json
 Authorization: Bearer {{token}}
 
 {
-  "currentPassword": "password123",
+  "currentPassword": "nepassword123",
   "newPassword": "newpassword123"
 }
+### Get user profile
+GET {{baseUrl}}/auth/profile
+Content-Type: application/json
+Authorization: Bearer {{token}}

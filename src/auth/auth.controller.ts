@@ -1,5 +1,3 @@
-// src/auth/auth.controller.ts
-
 import {
   Controller,
   Post,
@@ -48,10 +46,10 @@ export class AuthController {
 
   @Get('profile')
   @UseGuards(JwtAuthGuard)
-  async getProfile(@Request() req): Promise<{
+  getProfile(@Request() req): {
     message: string;
     user: UserResponse;
-  }> {
+  } {
     return {
       message: 'Profile retrieved successfully',
       user: req.user,
