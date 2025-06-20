@@ -9,15 +9,6 @@ export interface JwtPayload {
   iat?: number;
   exp?: number;
 }
-
-export interface AuthResponse {
-  message: string;
-  user: UserResponse;
-  access_token: string;
-  token_type: string;
-  expires_in: number;
-}
-
 // Interface for login response
 export interface LoginResponse {
   message: string;

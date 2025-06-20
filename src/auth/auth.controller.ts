@@ -1,5 +1,3 @@
-// src/auth/auth.controller.ts
-
 import {
   Controller,
   Post,
@@ -19,6 +17,7 @@ import {
 import { LoginUserDto } from '../users/dtos/auth.dto';
 import { UserResponse } from '../users/interfaces/user.interfaces';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
+import { AuthRequest } from '../common/interfaces/auth-request.interface';
 
 @Controller('auth')
 export class AuthController {
@@ -48,10 +47,10 @@ export class AuthController {
 
   @Get('profile')
   @UseGuards(JwtAuthGuard)
-  async getProfile(@Request() req): Promise<{
+  getProfile(@Request() req: AuthRequest): {
     message: string;
     user: UserResponse;
-  }> {
+  } {
     return {
       message: 'Profile retrieved successfully',
       user: req.user,
@@ -64,7 +63,7 @@ export class AuthController {
   @Post('refresh')
   @HttpCode(HttpStatus.OK)
   @UseGuards(JwtAuthGuard)
-  async refreshToken(@Request() req): Promise<{
+  async refreshToken(@Request() req: AuthRequest): Promise<{
     message: string;
     access_token: string;
     token_type: string;
@@ -87,9 +86,9 @@ export class AuthController {
   @Post('logout')
   @HttpCode(HttpStatus.OK)
   @UseGuards(JwtAuthGuard)
-  async logout(): Promise<{
+  logout(): {
     message: string;
-  }> {
+  } {
     return {
       message:
         'Logout successful. Please remove the token from client storage.',

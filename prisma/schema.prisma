@@ -44,6 +44,9 @@ model Product {
 
   cartItems  CartItem[]
   OrderItems OrderItem[]
+
+  @@index([name])
+  @@index([description])
 }
 
 model Cart {
