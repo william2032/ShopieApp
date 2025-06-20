@@ -22,6 +22,8 @@ export interface UserResponse {
   updatedAt: Date;
 }
 
+
+
 export interface IuserService {
   create(dto: CreateUserDto): Promise<UserResponse>;
 
