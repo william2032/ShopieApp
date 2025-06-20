@@ -248,7 +248,11 @@ export class CartService {
   /**
    * Remove item from cart
    */
-  async removeFromCart(userId: string, itemId: string): Promise<void> {
+  async removeFromCart(
+    userId: string,
+    itemId: string,
+    quantity: number,
+  ): Promise<void> {
     // Find the cart item and verify ownership
     const cartItem = await this.prisma.cartItem.findFirst({
       where: {
@@ -260,16 +264,36 @@ export class CartService {
     if (!cartItem) {
       throw new NotFoundException('Cart item not found');
     }
+    if (quantity <= 0) {
+      throw new BadRequestException('Quantity must be greater than 0');
+    }
+    if (quantity > cartItem.quantity) {
+      throw new BadRequestException(
+        `You are trying to remove ${quantity} items, but only ${cartItem.quantity} exist in your cart.`,
+      );
+    }
 
-    // Release reserved stock
-    await this.productService.releaseStock(
-      cartItem.productId,
-      cartItem.quantity,
-    );
-
-    // Remove cart item
-    await this.prisma.cartItem.delete({
+    if (quantity === cartItem.quantity) {
+      await this.productService.releaseStock(
+        cartItem.productId,
+        cartItem.quantity,
+      );
+      await this.prisma.cartItem.delete({
+        where: {
+          id: itemId,
+        },
+      });
+    } else {
+      // Release reserved stock
+      await this.productService.releaseStock(cartItem.productId, quantity);
+    }
+    await this.prisma.cartItem.update({
       where: { id: itemId },
+      data: {
+        quantity: {
+          decrement: quantity,
+        },
+      },
     });
   }
 

@@ -11,11 +11,13 @@ import {
   Request,
   HttpCode,
   HttpStatus,
+  ParseUUIDPipe, ParseIntPipe,
 } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { CartService } from './carts.service';
 import { AddToCartDto } from './dtos/add-cart.dto';
 import { UpdateCartItemDto } from './dtos/update-cart.dto';
+import { RemoveFromCartDto } from './dtos/remove-cart.dto';
 
 @Controller('cart')
 @UseGuards(JwtAuthGuard) // All cart endpoints require authentication
@@ -59,16 +61,6 @@ export class CartsController {
   }
 
   /**
-   * Remove item from cart
-   * DELETE /cart/items/:itemId
-   */
-  @Delete('items/:itemId')
-  @HttpCode(HttpStatus.NO_CONTENT)
-  async removeFromCart(@Param('itemId') itemId: string, @Request() req) {
-    await this.cartService.removeFromCart(req.user.id, itemId);
-  }
-
-  /**
    * Clear entire cart
    * DELETE /cart
    */
@@ -76,5 +68,19 @@ export class CartsController {
   @HttpCode(HttpStatus.NO_CONTENT)
   async clearCart(@Request() req) {
     await this.cartService.clearCart(req.user.id);
+  }
+
+  /**
+   * Remove item from cart
+   * DELETE /cart/items/:itemId
+   */
+  @Delete('item/:itemId/:quantity')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async removeFromCart(
+    @Param('itemId', ParseUUIDPipe) itemId: string,
+    @Param('quantity', ParseIntPipe) quantity: number,
+    @Request() req,
+  ): Promise<void> {
+    await this.cartService.removeFromCart(req.user.id, itemId, quantity);
   }
 }
