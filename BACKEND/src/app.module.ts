@@ -8,6 +8,8 @@ import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
 import { ProductsController } from './products/products.controller';
 import { ProductsModule } from './products/products.module';
+import { MailerService } from './mailer/mailer.service';
+import { AppMailerModule } from './mailer/mailer.module';
 
 @Module({
   imports: [
@@ -17,8 +19,9 @@ import { ProductsModule } from './products/products.module';
     CartsModule,
     UsersModule,
     ProductsModule,
+    AppMailerModule,
   ],
   controllers: [AppController, ProductsController],
-  providers: [AppService],
+  providers: [AppService, MailerService],
 })
 export class AppModule {}

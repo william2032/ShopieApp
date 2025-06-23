@@ -1,4 +1,4 @@
-import { ChangePasswordDto, CreateUserDto, UpdateUserDto } from '../dtos';
+import { CreateUserDto, UpdateUserDto } from '../dtos';
 import { $Enums } from '../../../generated/prisma';
 
 export type UserRole = $Enums.UserRole;
@@ -22,8 +22,6 @@ export interface UserResponse {
   updatedAt: Date;
 }
 
-
-
 export interface IuserService {
   create(dto: CreateUserDto): Promise<UserResponse>;
 
@@ -38,9 +36,4 @@ export interface IuserService {
   remove(id: string): Promise<void>;
 
   resetPassword(email: string): Promise<void>;
-
-  changePassword(
-    id: string,
-    changePasswordDto: ChangePasswordDto,
-  ): Promise<void>;
 }
