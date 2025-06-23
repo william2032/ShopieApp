@@ -1,10 +1,9 @@
 # compiled output
-BACKEND/dist
-BACKEND/node_modules
-BACKEND/build
-BACKEND/generated
+/dist
+/node_modules
+/build
 .idea
-image
+
 # Logs
 logs
 *.log

@@ -24,7 +24,7 @@ async function boostrap() {
         description: 'Enter JWT token',
         in: 'header',
       },
-      'JWT-auth',
+      'JWT-auth', // This name here is important for matching up with @ApiBearerAuth() in your controller!
     )
     .build();
   const document = SwaggerModule.createDocument(app, config);
@@ -35,9 +35,7 @@ async function boostrap() {
   });
   await app.listen(process.env.PORT ?? 3000);
 
-  console.log(
-    `Swagger documentation available at: ${await app.getUrl()}/api/docs`,
-  );
+  console.log(`Swagger documentation available at: ${await app.getUrl()}/api/docs`);
 }
 
 boostrap();
