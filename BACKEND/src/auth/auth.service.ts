@@ -14,12 +14,14 @@ import { JwtService } from '@nestjs/jwt';
 import { RegisterUserDto } from '../users/dtos/register.dto';
 import { LoginUserDto } from '../users/dtos/auth.dto';
 import { UserResponse } from '../users/interfaces/user.interfaces';
+import { MailerService } from '../mailer/mailer.service';
 
 @Injectable()
 export class AuthService implements IAuthService {
   constructor(
     private userService: UserService,
     private jwtService: JwtService,
+    private mailerService: MailerService,
   ) {}
 
   async register(registerDto: RegisterUserDto): Promise<RegisterResponse> {
@@ -36,6 +38,9 @@ export class AuthService implements IAuthService {
       name: registerDto.name,
       role: registerDto.role,
     });
+
+    //send email
+    await this.mailerService.sendWelcomeEmail(user.email, user.name);
 
     // Generate JWT token
     const access_token = await this.generateJwtToken(user);

@@ -95,6 +95,9 @@ model PasswordResetToken {
   token     String   @unique
   expiresAt DateTime
   createdAt DateTime @default(now())
+  used      Boolean  @default(false)
+
+  @@map("password_reset_tokens")
 }
 
 enum UserRole {

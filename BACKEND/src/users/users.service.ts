@@ -2,12 +2,11 @@ import {
   Injectable,
   NotFoundException,
   ConflictException,
-  UnauthorizedException,
 } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import * as bcrypt from 'bcrypt';
 import { UserResponse, IuserService } from './interfaces/user.interfaces';
-import { ChangePasswordDto, CreateUserDto, UpdateUserDto } from './dtos';
+import { CreateUserDto, UpdateUserDto } from './dtos';
 import { User } from '../../generated/prisma';
 import * as crypto from 'crypto';
 
@@ -143,41 +142,6 @@ export class UserService implements IuserService {
     // TODO: Send email with reset token
     // You can implement email service here
     console.log(`Password reset token for ${email}: ${resetToken}`);
-  }
-
-  async changePassword(
-    id: string,
-    changePasswordDto: ChangePasswordDto,
-  ): Promise<void> {
-    const user = await this.prisma.user.findUnique({
-      where: { id },
-    });
-
-    if (!user) {
-      throw new NotFoundException('User not found');
-    }
-
-    // Verify current password
-    const isCurrentPasswordValid = await bcrypt.compare(
-      changePasswordDto.currentPassword,
-      user.password,
-    );
-
-    if (!isCurrentPasswordValid) {
-      throw new UnauthorizedException('Current password is incorrect');
-    }
-
-    // Hash new password
-    const hashedNewPassword = await bcrypt.hash(
-      changePasswordDto.newPassword,
-      10,
-    );
-
-    // Update password
-    await this.prisma.user.update({
-      where: { id },
-      data: { password: hashedNewPassword },
-    });
   }
 
   async verifyPassword(user: User, password: string): Promise<boolean> {

@@ -13,12 +13,7 @@ import {
   Request,
 } from '@nestjs/common';
 import { UserService } from './users.service';
-import {
-  ChangePasswordDto,
-  CreateUserDto,
-  ResetPasswordDto,
-  UpdateUserDto,
-} from './dtos';
+import { CreateUserDto, UpdateUserDto } from './dtos';
 import { UserResponse } from './interfaces/user.interfaces';
 import {
   ApiBadRequestResponse,
@@ -26,16 +21,11 @@ import {
   ApiCreatedResponse,
   ApiNoContentResponse,
   ApiNotFoundResponse,
-  ApiOkResponse,
   ApiOperation,
   ApiParam,
   ApiTags,
 } from '@nestjs/swagger';
-import {
-  CreateUserResponseDto,
-  ErrorResponseDto,
-  PasswordResetResponseDto,
-} from './interfaces';
+import { CreateUserResponseDto, ErrorResponseDto } from './interfaces';
 
 @ApiTags('Users')
 @Controller('users')
@@ -197,69 +187,5 @@ export class UserController {
   })
   async remove(@Param('id') id: string): Promise<void> {
     await this.userService.remove(id);
-  }
-
-  /**
-   * Request password reset
-   * POST /users/reset-password
-   */
-  @Post('reset-password')
-  @HttpCode(HttpStatus.OK)
-  @ApiOperation({
-    summary: 'Request password reset',
-    description: 'Send password reset instructions to user email address.',
-  })
-  @ApiBody({
-    type: ResetPasswordDto,
-    description: 'Email address for password reset',
-  })
-  @ApiOkResponse({
-    description: 'Password reset instructions sent',
-    type: PasswordResetResponseDto,
-    example: {
-      message: 'Password reset instructions sent to your email',
-    },
-  })
-  async resetPassword(@Body() resetPasswordDto: ResetPasswordDto): Promise<{
-    message: string;
-  }> {
-    await this.userService.resetPassword(resetPasswordDto.email);
-
-    return {
-      message: 'Password reset instructions sent to your email',
-    };
-  }
-
-  /**
-   * Change user password
-   * POST /users/:id/change-password
-   */
-  @Post(':id/change-password')
-  @HttpCode(HttpStatus.OK)
-  @ApiOperation({
-    summary: 'Change user password',
-    description: 'Change user password with current password verification.',
-  })
-  @ApiParam({
-    name: 'id',
-    type: 'string',
-    description: 'User ID',
-    example: '12345',
-  })
-  @ApiBody({
-    type: ChangePasswordDto,
-    description: 'Current and new password data',
-  })
-  async changePassword(
-    @Param('id') id: string,
-    @Body() changePasswordDto: ChangePasswordDto,
-  ): Promise<{
-    message: string;
-  }> {
-    await this.userService.changePassword(id, changePasswordDto);
-
-    return {
-      message: 'Password changed successfully',
-    };
   }
 }

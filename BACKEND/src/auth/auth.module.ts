@@ -1,14 +1,19 @@
 import { Module } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { UsersModule } from '../users/users.module'; // ✅ Import the module that provides UserService
+import { UsersModule } from '../users/users.module';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AuthController } from './auth.controller';
 import { JwtStrategy } from './strategies/jwt-strategies';
+import { PasswordResetService } from './services/password-reset.service';
+import { PrismaModule } from '../prisma/prisma.module';
+import { AppMailerModule } from '../mailer/mailer.module';
 
 @Module({
   imports: [
     UsersModule,
+    PrismaModule,
+    AppMailerModule,
     JwtModule.registerAsync({
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => ({
@@ -18,8 +23,8 @@ import { JwtStrategy } from './strategies/jwt-strategies';
       inject: [ConfigService],
     }),
   ],
-  providers: [AuthService, JwtStrategy],
-  exports: [AuthService],
+  providers: [AuthService, JwtStrategy, PasswordResetService],
+  exports: [AuthService, PasswordResetService],
   controllers: [AuthController],
 })
 export class AuthModule {}
