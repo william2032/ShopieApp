@@ -1,0 +1,18 @@
+<section class="container mx-auto px-4 py-8">
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+    <div *ngFor="let banner of banners"
+         class="relative rounded-lg overflow-hidden h-48 flex items-center"
+         [ngClass]="banner.bgColor">
+      <div class="flex-1 p-6">
+        <h3 class="text-white text-xl font-bold mb-2">{{ banner.title }}</h3>
+        <p class="text-white text-sm mb-4">{{ banner.subtitle }}</p>
+        <button class="bg-white text-gray-800 px-4 py-2 rounded text-sm font-medium hover:bg-gray-100 transition-colors">
+          {{ banner.buttonText }}
+        </button>
+      </div>
+      <div class="flex-1 flex justify-end">
+        <img ngSrc="banner.image" [alt]="banner.title" class="h-32 w-auto object-contain">
+      </div>
+    </div>
+  </div>
+</section>

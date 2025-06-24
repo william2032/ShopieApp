@@ -1,0 +1,49 @@
+<section class="bg-gray-100 py-16">
+  <div class="container mx-auto px-4">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-center">
+      <!-- Left Product Image -->
+      <div class="flex justify-center">
+        <img src="https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=300&h=300&fit=crop"
+             alt="Hot Deal Product"
+             class="max-w-full h-auto">
+      </div>
+
+      <!-- Center Content -->
+      <div class="text-center">
+        <!-- Countdown Timer -->
+        <div class="flex justify-center space-x-4 mb-6">
+          <div class="bg-red-500 text-white rounded-full w-16 h-16 flex flex-col items-center justify-center">
+            <span class="text-xl font-bold">{{ countdown.days }}</span>
+            <span class="text-xs">Days</span>
+          </div>
+          <div class="bg-red-500 text-white rounded-full w-16 h-16 flex flex-col items-center justify-center">
+            <span class="text-xl font-bold">{{ countdown.hours }}</span>
+            <span class="text-xs">Hours</span>
+          </div>
+          <div class="bg-red-500 text-white rounded-full w-16 h-16 flex flex-col items-center justify-center">
+            <span class="text-xl font-bold">{{ countdown.minutes }}</span>
+            <span class="text-xs">Minutes</span>
+          </div>
+          <div class="bg-red-500 text-white rounded-full w-16 h-16 flex flex-col items-center justify-center">
+            <span class="text-xl font-bold">{{ countdown.seconds }}</span>
+            <span class="text-xs">Seconds</span>
+          </div>
+        </div>
+
+        <h2 class="text-3xl font-bold text-gray-800 mb-2">HOT DEAL THIS WEEK</h2>
+        <p class="text-gray-600 mb-6">NEW COLLECTION UP TO 50% OFF</p>
+
+        <button class="bg-red-500 hover:bg-red-600 text-white px-8 py-3 rounded-lg font-medium transition-colors">
+          SHOP NOW
+        </button>
+      </div>
+
+      <!-- Right Product Image -->
+      <div class="flex justify-center">
+        <img src="https://images.unsplash.com/photo-1583394838336-acd977736f90?w=300&h=300&fit=crop"
+             alt="Hot Deal Product"
+             class="max-w-full h-auto">
+      </div>
+    </div>
+  </div>
+</section>
