@@ -21,8 +21,7 @@ import {NgIf, NgSwitch, NgSwitchCase} from '@angular/common';
     NgSwitchCase,
     NgIf,
     FormsModule,
-    ReactiveFormsModule,
-    RouterLink
+    ReactiveFormsModule
   ],
   styleUrls: ['./auth.component.scss']
 })
@@ -37,6 +36,8 @@ export class AuthComponent implements OnInit, OnDestroy {
   registerForm!: FormGroup;
   forgotPasswordForm!: FormGroup;
   resetPasswordForm!: FormGroup;
+
+
 
   // State
   isLoading = false;

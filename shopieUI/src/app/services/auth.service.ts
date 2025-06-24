@@ -69,6 +69,8 @@ export class AuthService {
       .pipe(
         tap(response => {
           this.setSession(response);
+
+          this.currentUserSubject.next(response.user)
         }),
         catchError(this.handleError)
       );

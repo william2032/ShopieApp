@@ -13,11 +13,13 @@ import { AuthService } from '../../services/auth.service';
   styleUrl: './header.component.scss'
 })
 export class HeaderComponent {
+  userEmail: string | null = null;
   isLoggedIn: boolean = false;
 
   constructor(private router: Router, private authService: AuthService) {
     // Subscribe to currentUser$ to update login status
     this.authService.currentUser$.subscribe(user => {
+      this.userEmail = user?.email || null;
       this.isLoggedIn = !!user && authService.isLoggedIn();
     });
   }
@@ -27,7 +29,9 @@ export class HeaderComponent {
   }
 
   logout(): void {
-    this.authService.logout();
-    this.router.navigate(['/']); // Redirect to home after logout
+    setTimeout(() => {
+      this.authService.logout();
+      this.router.navigate(['/']); // Redirect to home after logout
+    }, 2000);
   }
 }

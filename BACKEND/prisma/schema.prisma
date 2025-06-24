@@ -29,7 +29,7 @@ model User {
 }
 
 model Product {
-  id             String   @id @default(uuid())
+  id             String      @id @default(uuid())
   name           String
   description    String
   price          Float
@@ -37,13 +37,12 @@ model Product {
   totalStock     Int
   availableStock Int
   reservedStock  Int
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
-  admin          User     @relation("ProductCreator", fields: [adminId], references: [id])
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+  admin          User        @relation("ProductCreator", fields: [adminId], references: [id])
   adminId        String
-
-  cartItems  CartItem[]
-  OrderItems OrderItem[]
+  cartItems      CartItem[]
+  OrderItems     OrderItem[]
 
   @@index([name])
   @@index([description])
