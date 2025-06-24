@@ -108,11 +108,24 @@ export class ProductsController {
   }
 
   /**
+   * Get all products without filtering and pagination (customers)
+   */
+  @Get('all')
+  @ApiOperation({
+    summary: 'Get all products',
+    description:
+      'Retrieve all products without filtering, sorting Public endpoint.',
+  })
+  async getAll(@Query() query: ProductQueryDto) {
+    return this.productService.findAll(query);
+  }
+
+  /**
    * Get all products with filtering and pagination (customers)
    */
   @Get()
   @ApiOperation({
-    summary: 'Get all products',
+    summary: 'Filter all products',
     description:
       'Retrieve all products with optional filtering, sorting Public endpoint.',
   })

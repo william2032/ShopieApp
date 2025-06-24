@@ -1,0 +1,9 @@
+GET http://localhost:3000/products
+User-Agent: IntelliJ HTTP Client/WebStorm 2024.3.4
+Accept-Encoding: br, deflate, gzip, x-gzip
+Accept: */*
+
+<> 2025-06-23T212002.200.json
+
+###
+
