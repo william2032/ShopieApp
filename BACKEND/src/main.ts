@@ -27,15 +27,23 @@ async function boostrap() {
       'JWT-auth', // This name here is important for matching up with @ApiBearerAuth() in your controller!
     )
     .build();
+
+
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api/docs', app, document, {
     swaggerOptions: {
       persistAuthorization: true,
     },
   });
-  await app.listen(process.env.PORT ?? 3000);
+  app.enableCors({
+    origin: 'http://localhost:4200',
+    credentials: true,
+  });
+    await app.listen(process.env.PORT ?? 3000);
 
-  console.log(`Swagger documentation available at: ${await app.getUrl()}/api/docs`);
+  console.log(
+    `Swagger documentation available at: ${await app.getUrl()}/api/docs`,
+  );
 }
 
 boostrap();

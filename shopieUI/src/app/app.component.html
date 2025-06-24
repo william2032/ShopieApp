@@ -2,12 +2,17 @@
   <app-header></app-header>
   <app-navigation></app-navigation>
   <main>
-    <app-hero-banners></app-hero-banners>
+    <router-outlet></router-outlet>
+    <app-hero-banners *ngIf="!isLoading && !hasError"></app-hero-banners>
     <app-product-section title="NEW PRODUCTS" [products]="newProducts" [categories]="productCategories"></app-product-section>
     <app-hot-deal></app-hot-deal>
     <app-product-section title="TOP SELLING" [products]="topSellingProducts" [categories]="productCategories"></app-product-section>
     <app-top-selling-grid></app-top-selling-grid>
     <app-newsletter></app-newsletter>
+    <div *ngIf="hasError" class="text-center py-10">
+      <p class="text-red-500">{{ errorMessage }}</p>
+      <button (click)="retryLoadData()" class="mt-4 bg-blue-600 text-white p-2 rounded-md hover:bg-blue-700">Retry</button>
+    </div>
   </main>
   <app-footer></app-footer>
 </div>

@@ -9,9 +9,12 @@ import {HotDealComponent} from './components/hot-deal/hot-deal.component';
 import {TopSellingGridComponent} from './components/top-selling-grid/top-selling-grid.component';
 import {NewsletterComponent} from './components/newsletter/newsletter.component';
 import {FooterComponent} from './components/footer/footer.component';
+import {RouterOutlet} from '@angular/router';
+import {NgIf} from '@angular/common';
 
 @Component({
   selector: 'app-root',
+  standalone: true,
   templateUrl: './app.component.html',
   imports: [
     HeaderComponent,
@@ -21,7 +24,9 @@ import {FooterComponent} from './components/footer/footer.component';
     HotDealComponent,
     TopSellingGridComponent,
     NewsletterComponent,
-    FooterComponent
+    FooterComponent,
+    RouterOutlet,
+    NgIf
   ],
   styleUrls: ['./app.component.scss']
 })
@@ -51,14 +56,8 @@ export class AppComponent implements OnInit {
     try {
       this.isLoading = true;
       this.hasError = false;
-
-      // Load new products
       this.newProducts = this.dataService.getNewProducts();
-
-      // Load top selling products
       this.topSellingProducts = this.dataService.getTopSellingProducts();
-
-      // Load categories with 'All' option
       this.productCategories = [
         { name: 'All', slug: 'all' },
         ...this.dataService.getCategories()
@@ -67,9 +66,9 @@ export class AppComponent implements OnInit {
       this.isLoading = false;
 
       // Log loaded data for debugging
-      console.log('New Products:', this.newProducts.length);
-      console.log('Top Selling Products:', this.topSellingProducts.length);
-      console.log('Categories:', this.productCategories.length);
+      // console.log('New Products:', this.newProducts.length);
+      // console.log('Top Selling Products:', this.topSellingProducts.length);
+      // console.log('Categories:', this.productCategories.length);
 
     } catch (error) {
       this.handleError(error);

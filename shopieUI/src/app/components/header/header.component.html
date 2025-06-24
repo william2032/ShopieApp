@@ -9,8 +9,8 @@
       </div>
       <div class="flex space-x-4">
         <span>Ksh</span>
-        <span>My Account</span>
-      </div>
+        <span *ngIf="!isLoggedIn" (click)="navigateToLogin()" class="cursor-pointer">My Account</span></div>
+      <span *ngIf="isLoggedIn" (click)="logout()" class="cursor-pointer">Logout</span>
     </div>
   </div>
 
@@ -47,16 +47,20 @@
       <div class="flex items-center space-x-6">
         <div class="relative">
           <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
           </svg>
-          <span class="absolute -top-2 -right-2 bg-red-500 text-xs rounded-full w-5 h-5 flex items-center justify-center">0</span>
+          <span
+            class="absolute -top-2 -right-2 bg-red-500 text-xs rounded-full w-5 h-5 flex items-center justify-center">0</span>
           <div class="text-xs mt-1">Your Wishlist</div>
         </div>
         <div class="relative">
           <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-1.35 5.39A1 1 0 006.64 20H19a1 1 0 001-1v-1M7 13v6a1 1 0 001 1h1m0-8h8"></path>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-1.35 5.39A1 1 0 006.64 20H19a1 1 0 001-1v-1M7 13v6a1 1 0 001 1h1m0-8h8"></path>
           </svg>
-          <span class="absolute -top-2 -right-2 bg-red-500 text-xs rounded-full w-5 h-5 flex items-center justify-center">0</span>
+          <span
+            class="absolute -top-2 -right-2 bg-red-500 text-xs rounded-full w-5 h-5 flex items-center justify-center">0</span>
           <div class="text-xs mt-1">Your Cart</div>
         </div>
       </div>
