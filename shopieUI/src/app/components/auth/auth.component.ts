@@ -146,9 +146,6 @@ export class AuthComponent implements OnInit, OnDestroy {
             this.isLoading = false;
             this.successMessage = response.message;
             // Redirect to dashboard or previous page
-            setTimeout(() => {
-              this.router.navigate(['/']);
-            }, 1000);
           },
           error: (error) => {
             this.isLoading = false;

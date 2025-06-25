@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterOutlet } from '@angular/router';
+import {NavigationEnd, Router, RouterOutlet} from '@angular/router';
 import { ProductSectionComponent } from './components/product-section/product-section.component';
 import { HeaderComponent } from './components/header/header.component';
 import { NavigationComponent } from './components/navigation/navigation.component';
@@ -52,11 +52,17 @@ export class AppComponent implements OnInit {
   isLoading = true;
   hasError = false;
   errorMessage = '';
+  isDefaultRoute = true;
 
-  constructor(private productService: ProductService) {}
+  constructor(private productService: ProductService,private router: Router) {}
 
   ngOnInit(): void {
     this.loadProducts();
+    this.router.events.subscribe(event => {
+      if (event instanceof NavigationEnd) {
+        this.isDefaultRoute = event.url === '/' || event.url === '';
+      }
+    });
   }
 
   loadProducts(): void {

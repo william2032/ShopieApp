@@ -79,7 +79,7 @@ export class ProductService {
   }
 
   getAllProducts(): Observable<Product[]> {
-    return this.http.get<{ products: Product[][] }>(`${this.API_URL}/all`).pipe(
+    return this.http.get<{ products: Product[][] }>(`${this.API_URL}//products/all`).pipe(
       map(response => response.products[0] || []),
       tap(products => console.log('getAllProducts processed:', products)),
       catchError(this.handleError)
@@ -87,7 +87,7 @@ export class ProductService {
   }
 
   getProductById(id: string): Observable<Product> {
-    return this.http.get<Product>(`${this.API_URL}/${id}`).pipe(
+    return this.http.get<Product>(`${this.API_URL}/products/${id}`).pipe(
       tap(product => console.log('getProductById response:', product)),
       catchError(this.handleError)
     );
@@ -109,7 +109,7 @@ export class ProductService {
   deleteProduct(id: string): Observable<void> {
     const token = this.authService.getToken();
     const headers = token ? {Authorization: `Bearer ${token}`} : this.authService.getHttpOptions().headers;
-    return this.http.delete<void>(`${this.API_URL}/${id}`, {headers}).pipe(
+    return this.http.delete<void>(`${this.API_URL}/products/${id}`, {headers}).pipe(
       catchError((error) => this.handleError(error)));
   }
 
@@ -118,7 +118,7 @@ export class ProductService {
     const token = this.authService.getToken();
     const headers = token ? {Authorization: `Bearer ${token}`} : this.authService.getHttpOptions().headers;
     product.updatedAt = new Date().toISOString();
-    return this.http.put<Product>(`${this.API_URL}/${id}`, product, {headers}).pipe(
+    return this.http.put<Product>(`${this.API_URL}/products/${id}`, product, {headers}).pipe(
       catchError((error) => this.handleError(error)));
   }
 

@@ -62,6 +62,18 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
     this.router.navigate(['/admin/edit', product.id], { state: { product } });
   }
 
+  onImageUpload(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files.length > 0) {
+      const file = input.files[0];
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        this.newProduct.image = e.target?.result as string; // Sets the image as a base64 string
+      };
+      reader.readAsDataURL(file); // Converts the image to base64
+    }
+  }
+
   deleteProduct(id: string): void {
     if (confirm('Are you sure you want to delete this product?')) {
       this.productService.deleteProduct(id).subscribe(

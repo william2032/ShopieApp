@@ -73,8 +73,8 @@
       <div class="flex items-center justify-between text-sm">
         <span class="text-gray-600">Stock:</span>
         <span [class]="getStockStatusClass()">
-          {{ getStockStatusText() }}
-        </span>
+      {{ product.availableStock }} {{ getStockStatusText() }}
+    </span>
       </div>
 
       <!-- Stock Progress Bar -->
