@@ -7,10 +7,21 @@
         <span>infoshopie&#64;gmail.com</span>
         <span>1734 Chuka Road</span>
       </div>
-      <div class="flex space-x-4">
-        <span>Ksh</span>
-        <span *ngIf="!isLoggedIn" (click)="navigateToLogin()" class="cursor-pointer">My Account</span></div>
-      <span *ngIf="isLoggedIn" (click)="logout()" class="cursor-pointer">Logout</span>
+      <div class="flex space-x-3">
+        <span *ngIf="!isLoggedIn" (click)="navigateToLogin()"
+              class="inline-block px-4 py-2 bg-red-600 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 transition-colors duration-200 cursor-pointer">My Account</span>
+      </div>
+      <span *ngIf="isLoggedIn" class="text-gray-300">User: {{ userEmail }}</span>
+
+      <span *ngIf="isLoggedIn" (click)="logout()" class="cursor-pointer">
+                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier"
+                                                                                           stroke-width="0"></g><g
+                  id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g
+                  id="SVGRepo_iconCarrier"> <path
+                  d="M15 16.5V19C15 20.1046 14.1046 21 13 21H6C4.89543 21 4 20.1046 4 19V5C4 3.89543 4.89543 3 6 3H13C14.1046 3 15 3.89543 15 5V8.0625M11 12H21M21 12L18.5 9.5M21 12L18.5 14.5"
+                  stroke="#000000" stroke-width="2" stroke-linecap="round"
+                  stroke-linejoin="round"></path> </g></svg>
+                Logout</span>
     </div>
   </div>
 
@@ -25,7 +36,7 @@
       <!-- Search Bar -->
       <div class="flex-1 max-w-2xl mx-8">
         <div class="flex">
-          <select class="bg-gray-200 text-gray-800 px-4 py-2 border-r border-gray-300">
+          <select class="bg-gray-200 text-gray-800 px-4 py-2 border-r border-gray-300 rounded-l-md">
             <option>All Categories</option>
             <option>Laptops</option>
             <option>Smartphones</option>
@@ -35,34 +46,61 @@
           <input
             type="text"
             placeholder="Search..."
-            class="flex-1 px-4 py-2 text-gray-800"
-          >
-          <button class="bg-red-500 hover:bg-red-600 px-6 py-2 text-white font-medium">
+            [(ngModel)]="searchTerm"
+            (input)="onSearch()"
+            class="flex-1 px-4 py-2 text-gray-800 focus:outline-none focus:ring-2 focus:ring-red-500">
+          <button class="bg-red-500 hover:bg-red-600 px-6 py-2 text-white font-medium rounded-r-md transition-colors">
             Search
           </button>
         </div>
       </div>
-
       <!-- Cart and Wishlist -->
       <div class="flex items-center space-x-6">
-        <div class="relative">
-          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <!-- Wishlist -->
+        <div class="relative cursor-pointer group" (click)="openWishlist()">
+          <svg class="w-6 h-6 group-hover:text-red-400 transition-colors"
+               fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                  d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+                  d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
           </svg>
           <span
-            class="absolute -top-2 -right-2 bg-red-500 text-xs rounded-full w-5 h-5 flex items-center justify-center">0</span>
-          <div class="text-xs mt-1">Your Wishlist</div>
+            class="absolute -top-2 -right-2 bg-red-500 text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                        0
+                    </span>
+          <div class="text-xs mt-1 group-hover:text-red-400 transition-colors">Your Wishlist</div>
         </div>
-        <div class="relative">
-          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                  d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-1.35 5.39A1 1 0 006.64 20H19a1 1 0 001-1v-1M7 13v6a1 1 0 001 1h1m0-8h8"></path>
+
+        <!-- Shopping Cart -->
+        <!-- Cart Icon Trigger -->
+        <div class="relative cursor-pointer group" (click)="isCartOpen = true">
+          <svg
+            class="w-6 h-6 group-hover:text-red-400 transition-colors"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-1.35 5.39A1 1 0 006.64 20H19a1 1 0 001-1v-1M7 13v6a1 1 0 001 1h1m0-8h8"
+            />
           </svg>
-          <span
-            class="absolute -top-2 -right-2 bg-red-500 text-xs rounded-full w-5 h-5 flex items-center justify-center">0</span>
-          <div class="text-xs mt-1">Your Cart</div>
+          <!-- Dynamic Cart Counter -->
+          <span [ngClass]="cart.totalItems > 0 ? 'absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center animate-pulse'
+      : 'absolute -top-2 -right-2 bg-gray-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center'">
+    {{ cart.totalItems }}
+  </span>
+          <!-- Label -->
+          <div class="text-xs mt-1 group-hover:text-red-400 transition-colors">
+            Your Cart
+            <span
+              *ngIf="cart.totalPrice > 0"
+              class="block text-red-400 font-semibold">
+      ${{ cart.totalPrice.toFixed(2) }}</span></div>
         </div>
+        <!-- Cart Modal -->
+        <app-cart-modal [isOpen]="isCartOpen" (closeModal)="closeCart()" (checkoutClick)="closeCart()"></app-cart-modal>
+
       </div>
     </div>
   </div>

@@ -28,7 +28,6 @@ async function boostrap() {
     )
     .build();
 
-
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api/docs', app, document, {
     swaggerOptions: {
@@ -39,7 +38,7 @@ async function boostrap() {
     origin: 'http://localhost:4200',
     credentials: true,
   });
-    await app.listen(process.env.PORT ?? 3000);
+  await app.listen(process.env.PORT ?? 3000);
 
   console.log(
     `Swagger documentation available at: ${await app.getUrl()}/api/docs`,

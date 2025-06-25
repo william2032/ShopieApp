@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable, BehaviorSubject, throwError } from 'rxjs';
-import { map, catchError, tap } from 'rxjs/operators';
+import {Observable, BehaviorSubject, throwError, Subject} from 'rxjs';
+import { catchError, tap } from 'rxjs/operators';
 import {environment} from '../../environments/environment';
-
+import { Router } from '@angular/router';
 // Interfaces
 export interface User {
   id: string;
@@ -49,8 +49,8 @@ export interface ResetPasswordRequest {
 })
 export class AuthService {
   private readonly API_URL =  environment.apiUrl;
-  private currentUserSubject = new BehaviorSubject<User | null>(null);
-  public currentUser$ = this.currentUserSubject.asObservable();
+  private userSubject = new BehaviorSubject<User | null>(null);
+  private logoutSubject = new Subject<void>();
 
   private httpOptions = {
     headers: new HttpHeaders({
@@ -58,17 +58,34 @@ export class AuthService {
     })
   };
 
-  constructor(private http: HttpClient) {
+
+  constructor(private http: HttpClient,  private router: Router) {
     // Check if user is already logged in
     this.loadUserFromStorage();
   }
+  get logout$(): Observable<void> {
+    return this.logoutSubject.asObservable();
+  }
 
+  get currentUser$(): Observable<User | null> {
+    return this.userSubject.asObservable();
+  }
+  getHttpOptions(): any {
+    return this.httpOptions;
+  }
   // Login method
   login(credentials: LoginRequest): Observable<AuthResponse> {
-    return this.http.post<AuthResponse>(`${this.API_URL}/login`, credentials, this.httpOptions)
+    return this.http.post<AuthResponse>(`${this.API_URL}/auth/login`, credentials, this.httpOptions)
       .pipe(
         tap(response => {
           this.setSession(response);
+
+          this.userSubject.next(response.user)
+          if (response.user.role.toUpperCase() === 'ADMIN') {
+            this.router.navigate(['/admin']);
+          } else {
+            this.router.navigate(['/']);
+          }
         }),
         catchError(this.handleError)
       );
@@ -80,7 +97,7 @@ export class AuthService {
       ...userData,
       role: userData.role?.toUpperCase() || 'CUSTOMER' // default to CUSTOMER if undefined
     };
-    return this.http.post<AuthResponse>(`${this.API_URL}/register`, fixedUserData, this.httpOptions)
+    return this.http.post<AuthResponse>(`${this.API_URL}/auth/register`, fixedUserData, this.httpOptions)
       .pipe(
         tap(response => {
           this.setSession(response);
@@ -91,7 +108,7 @@ export class AuthService {
 
   // Forgot password method
   forgotPassword(data: ForgotPasswordRequest): Observable<{message: string}> {
-    return this.http.post<{message: string}>(`${this.API_URL}/forgot-password`, data, this.httpOptions)
+    return this.http.post<{message: string}>(`${this.API_URL}/auth/forgot-password`, data, this.httpOptions)
       .pipe(
         catchError(this.handleError)
       );
@@ -99,7 +116,7 @@ export class AuthService {
 
   // Reset password method
   resetPassword(data: ResetPasswordRequest): Observable<{message: string}> {
-    return this.http.post<{message: string}>(`${this.API_URL}/reset-password`, data, this.httpOptions)
+    return this.http.post<{message: string}>(`${this.API_URL}/auth/reset-password`, data, this.httpOptions)
       .pipe(
         catchError(this.handleError)
       );
@@ -110,12 +127,13 @@ export class AuthService {
     localStorage.removeItem('access_token');
     localStorage.removeItem('user');
     localStorage.removeItem('token_expires_at');
-    this.currentUserSubject.next(null);
+    this.userSubject.next(null);
+    this.logoutSubject.next();
   }
 
   // Get current user
   getCurrentUser(): User | null {
-    return this.currentUserSubject.value;
+    return this.userSubject.value;
   }
 
   // Check if user is logged in
@@ -151,7 +169,7 @@ export class AuthService {
     localStorage.setItem('user', JSON.stringify(authResult.user));
     localStorage.setItem('token_expires_at', expiresAt.toString());
 
-    this.currentUserSubject.next(authResult.user);
+    this.userSubject.next(authResult.user);
   }
 
   private loadUserFromStorage(): void {
@@ -159,7 +177,7 @@ export class AuthService {
       const userStr = localStorage.getItem('user');
       if (userStr) {
         const user = JSON.parse(userStr);
-        this.currentUserSubject.next(user);
+        this.userSubject.next(user);
       }
     }
   }

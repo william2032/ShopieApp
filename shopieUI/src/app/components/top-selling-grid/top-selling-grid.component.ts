@@ -14,7 +14,7 @@ export class TopSellingGridComponent {
   leftProducts: Product[] = [
     {
       id: 1,
-      name: 'PRODUCT NAME GOES HERE',
+      name: 'HeadPhones',
       price: 980,
       image: 'https://images.unsplash.com/photo-1484704849700-f032a568e944?w=100&h=100&fit=crop',
       rating: 5,
@@ -22,7 +22,7 @@ export class TopSellingGridComponent {
     },
     {
       id: 2,
-      name: 'PRODUCT NAME GOES HERE',
+      name: 'Macbook',
       price: 980,
       image: 'https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=100&h=100&fit=crop',
       rating: 5,
@@ -30,7 +30,7 @@ export class TopSellingGridComponent {
     },
     {
       id: 3,
-      name: 'PRODUCT NAME GOES HERE',
+      name: 'HeadPhones',
       price: 980,
       image: 'https://images.unsplash.com/photo-1583394838336-acd977736f90?w=100&h=100&fit=crop',
       rating: 5,
@@ -41,7 +41,7 @@ export class TopSellingGridComponent {
   centerProducts: Product[] = [
     {
       id: 4,
-      name: 'PRODUCT NAME GOES HERE',
+      name: 'HeadPhone',
       price: 980,
       image: 'https://images.unsplash.com/photo-1583394838336-acd977736f90?w=100&h=100&fit=crop',
       rating: 5,
@@ -49,7 +49,7 @@ export class TopSellingGridComponent {
     },
     {
       id: 5,
-      name: 'PRODUCT NAME GOES HERE',
+      name: 'Mackbook',
       price: 980,
       image: 'https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=100&h=100&fit=crop',
       rating: 5,
@@ -57,7 +57,7 @@ export class TopSellingGridComponent {
     },
     {
       id: 6,
-      name: 'PRODUCT NAME GOES HERE',
+      name: 'Camera',
       price: 980,
       image: 'https://images.unsplash.com/photo-1502920917128-1aa500764cbd?w=100&h=100&fit=crop',
       rating: 5,
@@ -68,7 +68,7 @@ export class TopSellingGridComponent {
   rightProducts: Product[] = [
     {
       id: 7,
-      name: 'PRODUCT NAME GOES HERE',
+      name: 'HeadSet',
       price: 980,
       image: 'https://images.unsplash.com/photo-1484704849700-f032a568e944?w=100&h=100&fit=crop',
       rating: 5,
@@ -76,7 +76,7 @@ export class TopSellingGridComponent {
     },
     {
       id: 8,
-      name: 'PRODUCT NAME GOES HERE',
+      name: 'HeadSet',
       price: 980,
       image: 'https://images.unsplash.com/photo-1583394838336-acd977736f90?w=100&h=100&fit=crop',
       rating: 5,
@@ -84,7 +84,7 @@ export class TopSellingGridComponent {
     },
     {
       id: 9,
-      name: 'PRODUCT NAME GOES HERE',
+      name: 'Mac Book',
       price: 980,
       image: 'https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=100&h=100&fit=crop',
       rating: 5,
