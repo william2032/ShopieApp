@@ -1,31 +1,55 @@
-import { Component } from '@angular/core';
+import {Subscription} from 'rxjs';
+import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Cart, CartService} from '../../services/cart.service';
+import {Router} from '@angular/router';
+import {AuthService} from '../../services/auth.service';
 import {NgIf} from '@angular/common';
-import { Router } from '@angular/router';
-import { AuthService } from '../../services/auth.service';
+
 
 @Component({
   selector: 'app-header',
-  standalone: true,
-  imports: [
-    NgIf
-  ],
+  imports: [NgIf],
   templateUrl: './header.component.html',
-  styleUrl: './header.component.scss'
+  styleUrls: ['./header.component.scss']
 })
-export class HeaderComponent {
+
+export class HeaderComponent implements OnInit, OnDestroy {
   userEmail: string | null = null;
   isLoggedIn: boolean = false;
+  cart: Cart = {items: [], totalItems: 0, totalPrice: 0};
 
-  constructor(private router: Router, private authService: AuthService) {
-    // Subscribe to currentUser$ to update login status
-    this.authService.currentUser$.subscribe(user => {
+  private cartSubscription?: Subscription;
+  private userSubscription?: Subscription;
+
+  constructor(
+    private router: Router,
+    private authService: AuthService,
+    private cartService: CartService
+  ) {
+    this.userSubscription = this.authService.currentUser$.subscribe(user => {
       this.userEmail = user?.email || null;
-      this.isLoggedIn = !!user && authService.isLoggedIn();
+      this.isLoggedIn = !!user && this.authService.isLoggedIn();
     });
+  }
+
+  ngOnInit(): void {
+    this.cartSubscription = this.cartService.getCart().subscribe(cart => {
+      this.cart = cart;
+    });
+  }
+
+  ngOnDestroy(): void {
+    this.cartSubscription?.unsubscribe();
+    this.userSubscription?.unsubscribe();
   }
 
   navigateToLogin(): void {
     this.router.navigate(['/login']);
+  }
+
+  openWishlist(): void {
+    // Navigate to wishlist page
+    this.router.navigate(['/wishlist']);
   }
 
   logout(): void {
@@ -33,5 +57,16 @@ export class HeaderComponent {
       this.authService.logout();
       this.router.navigate(['/']); // Redirect to home after logout
     }, 2000);
+  }
+
+  openCart(): void {
+    // Navigate to cart page or open cart modal
+    this.router.navigate(['/cart']);
+  }
+
+  onSearch(event: Event): void {
+    const searchTerm = (event.target as HTMLInputElement).value;
+    // Implement search functionality
+    console.log('Searching for:', searchTerm);
   }
 }

@@ -65,7 +65,7 @@ export class AuthService {
 
   // Login method
   login(credentials: LoginRequest): Observable<AuthResponse> {
-    return this.http.post<AuthResponse>(`${this.API_URL}/login`, credentials, this.httpOptions)
+    return this.http.post<AuthResponse>(`${this.API_URL}/auth/login`, credentials, this.httpOptions)
       .pipe(
         tap(response => {
           this.setSession(response);
@@ -82,7 +82,7 @@ export class AuthService {
       ...userData,
       role: userData.role?.toUpperCase() || 'CUSTOMER' // default to CUSTOMER if undefined
     };
-    return this.http.post<AuthResponse>(`${this.API_URL}/register`, fixedUserData, this.httpOptions)
+    return this.http.post<AuthResponse>(`${this.API_URL}/auth/register`, fixedUserData, this.httpOptions)
       .pipe(
         tap(response => {
           this.setSession(response);
@@ -93,7 +93,7 @@ export class AuthService {
 
   // Forgot password method
   forgotPassword(data: ForgotPasswordRequest): Observable<{message: string}> {
-    return this.http.post<{message: string}>(`${this.API_URL}/forgot-password`, data, this.httpOptions)
+    return this.http.post<{message: string}>(`${this.API_URL}/auth/forgot-password`, data, this.httpOptions)
       .pipe(
         catchError(this.handleError)
       );
@@ -101,7 +101,7 @@ export class AuthService {
 
   // Reset password method
   resetPassword(data: ResetPasswordRequest): Observable<{message: string}> {
-    return this.http.post<{message: string}>(`${this.API_URL}/reset-password`, data, this.httpOptions)
+    return this.http.post<{message: string}>(`${this.API_URL}/auth/reset-password`, data, this.httpOptions)
       .pipe(
         catchError(this.handleError)
       );

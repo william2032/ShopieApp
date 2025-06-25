@@ -1,108 +1,98 @@
 import { Component, OnInit } from '@angular/core';
-import { Product, Category } from './interfaces/product.interface';
-import { DataService } from './services/data.service';
-import {HeaderComponent} from './components/header/header.component';
-import {NavigationComponent} from './components/navigation/navigation.component';
-import {HeroBannersComponent} from './components/hero-banners/hero-banners.component';
-import {ProductSectionComponent} from './components/product-section/product-section.component';
-import {HotDealComponent} from './components/hot-deal/hot-deal.component';
-import {TopSellingGridComponent} from './components/top-selling-grid/top-selling-grid.component';
-import {NewsletterComponent} from './components/newsletter/newsletter.component';
-import {FooterComponent} from './components/footer/footer.component';
-import {RouterOutlet} from '@angular/router';
-import {NgIf} from '@angular/common';
+import { CommonModule } from '@angular/common';
+import { RouterOutlet } from '@angular/router';
+import { ProductSectionComponent } from './components/product-section/product-section.component';
+import { HeaderComponent } from './components/header/header.component';
+import { NavigationComponent } from './components/navigation/navigation.component';
+import { HeroBannersComponent } from './components/hero-banners/hero-banners.component';
+import { HotDealComponent } from './components/hot-deal/hot-deal.component';
+import { TopSellingGridComponent } from './components/top-selling-grid/top-selling-grid.component';
+import { NewsletterComponent } from './components/newsletter/newsletter.component';
+import { FooterComponent } from './components/footer/footer.component';
+import { ProductService, Product } from './services/product.service';
+import { Observable, of } from 'rxjs';
+import { catchError, tap } from 'rxjs/operators';
+
+interface Category {
+  name: string;
+  slug: string;
+}
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  templateUrl: './app.component.html',
   imports: [
+    CommonModule,
+    RouterOutlet,
+    ProductSectionComponent,
     HeaderComponent,
     NavigationComponent,
     HeroBannersComponent,
-    ProductSectionComponent,
     HotDealComponent,
     TopSellingGridComponent,
     NewsletterComponent,
-    FooterComponent,
-    RouterOutlet,
-    NgIf
+    FooterComponent
   ],
+  templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnInit {
-  title = 'Shopie';
-
-  // Data properties for template binding
   newProducts: Product[] = [];
   topSellingProducts: Product[] = [];
-  productCategories: Category[] = [];
-
-  // Loading state
+  productCategories: Category[] = [
+    { name: 'All', slug: 'all' },
+    { name: 'Laptops', slug: 'laptops' },
+    { name: 'Smartphones', slug: 'smartphones' },
+    { name: 'Cameras', slug: 'cameras' },
+    { name: 'Accessories', slug: 'accessories' },
+    { name: 'Tablets', slug: 'tablets' }
+  ];
   isLoading = true;
   hasError = false;
   errorMessage = '';
 
-  constructor(private dataService: DataService) {}
+  constructor(private productService: ProductService) {}
 
   ngOnInit(): void {
-    this.loadAppData();
+    this.loadProducts();
   }
 
-  /**
-   * Load all required data for the application
-   */
-  private loadAppData(): void {
-    try {
-      this.isLoading = true;
-      this.hasError = false;
-      this.newProducts = this.dataService.getNewProducts();
-      this.topSellingProducts = this.dataService.getTopSellingProducts();
-      this.productCategories = [
-        { name: 'All', slug: 'all' },
-        ...this.dataService.getCategories()
-      ];
+  loadProducts(): void {
+    this.isLoading = true;
+    this.hasError = false;
+    this.errorMessage = '';
 
-      this.isLoading = false;
+    this.productService.getNewProducts().pipe(
+      tap(products => {
+        this.newProducts = products;
+        this.isLoading = false;
+      }),
+      catchError(error => {
+        this.handleError(error);
+        return of([]);
+      })
+    ).subscribe();
 
-      // Log loaded data for debugging
-      // console.log('New Products:', this.newProducts.length);
-      // console.log('Top Selling Products:', this.topSellingProducts.length);
-      // console.log('Categories:', this.productCategories.length);
-
-    } catch (error) {
-      this.handleError(error);
-    }
+    this.productService.getTopSellingProducts().pipe(
+      tap(products => {
+        this.topSellingProducts = products;
+        this.isLoading = false;
+      }),
+      catchError(error => {
+        this.handleError(error);
+        return of([]);
+      })
+    ).subscribe();
   }
 
-  /**
-   * Handle loading errors
-   */
-  private handleError(error: any): void {
-    this.isLoading = false;
-    this.hasError = true;
-    this.errorMessage = 'Failed to load store data. Please try again later.';
-    console.error('Error loading app data:', error);
-  }
-
-  /**
-   * Retry loading data
-   */
   retryLoadData(): void {
-    this.loadAppData();
+    this.loadProducts();
   }
 
-  /**
-   * Track by function for ngFor optimization
-   */
-  trackByProductId(index: number, product: Product): number {
-    return product.id;
-  }
-
-  /**
-   * Track by function for categories
-   */
-  trackByCategorySlug(index: number, category: Category): string {
-    return category.slug;
+  private handleError(error: any): void {
+    this.hasError = true;
+    this.errorMessage = 'Failed to load products. Please try again later.';
+    this.isLoading = false;
+    console.error('Error loading products:', error);
   }
 }

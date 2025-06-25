@@ -1,0 +1,166 @@
+<!-- cart-modal.component.html -->
+<div *ngIf="isOpen"
+     class="fixed inset-0 z-50 overflow-y-auto"
+     (click)="onBackdropClick($event)">
+
+  <!-- Backdrop -->
+  <div class="fixed inset-0 bg-black bg-opacity-50 transition-opacity"></div>
+
+  <!-- Modal -->
+  <div class="relative min-h-screen flex items-center justify-center p-4">
+    <div class="relative bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-hidden">
+
+      <!-- Header -->
+      <div class="bg-gray-50 px-6 py-4 border-b border-gray-200">
+        <div class="flex items-center justify-between">
+          <h2 class="text-xl font-semibold text-gray-900">
+            Shopping Cart
+            <span class="text-sm font-normal text-gray-500 ml-2">
+              ({{ cart.totalItems }} items)
+            </span>
+          </h2>
+          <button
+            (click)="closeCart()"
+            class="p-2 hover:bg-gray-200 rounded-full transition-colors">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Cart Content -->
+      <div class="max-h-96 overflow-y-auto">
+
+        <!-- Empty Cart -->
+        <div *ngIf="cart.items.length === 0" class="text-center py-12">
+          <svg class="w-16 h-16 text-gray-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-1.35 5.39A1 1 0 006.64 20H19a1 1 0 001-1v-1M7 13v6a1 1 0 001 1h1m0-8h8"/>
+          </svg>
+          <h3 class="text-lg font-medium text-gray-900 mb-2">Your cart is empty</h3>
+          <p class="text-gray-500 mb-4">Add some products to get started!</p>
+          <button
+            (click)="closeCart()"
+            class="bg-red-500 hover:bg-red-600 text-white px-6 py-2 rounded-lg transition-colors">
+            Continue Shopping
+          </button>
+        </div>
+
+        <!-- Cart Items -->
+        <div *ngIf="cart.items.length > 0" class="divide-y divide-gray-200">
+          <div *ngFor="let item of cart.items"
+               class="p-6 flex items-center space-x-4 hover:bg-gray-50 transition-colors">
+
+            <!-- Product Image -->
+            <div class="flex-shrink-0 w-16 h-16">
+              <img
+                [src]="item.image"
+                [alt]="item.name"
+                class="w-full h-full object-cover rounded-md"
+                onerror="this.src='assets/images/placeholder.jpg'">
+            </div>
+
+            <!-- Product Details -->
+            <div class="flex-1 min-w-0">
+              <h4 class="text-sm font-medium text-gray-900 truncate">
+                {{ item.name }}
+              </h4>
+              <p class="text-sm text-gray-500">
+                ${{ item.price.toFixed(2) }} each
+              </p>
+              <p class="text-xs text-gray-400 mt-1">
+                Stock: {{ item.totalStock }} available
+              </p>
+            </div>
+
+            <!-- Quantity Controls -->
+            <div class="flex items-center space-x-2">
+              <button
+                (click)="updateQuantity(item, item.quantity - 1)"
+                class="p-1 hover:bg-gray-200 rounded-full transition-colors">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"/>
+                </svg>
+              </button>
+
+              <span class="w-8 text-center text-sm font-medium">
+                {{ item.quantity }}
+              </span>
+
+              <button
+                (click)="updateQuantity(item, item.quantity + 1)"
+                [disabled]="item.quantity >= item.totalStock"
+                class="p-1 hover:bg-gray-200 rounded-full transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+                </svg>
+              </button>
+            </div>
+
+            <!-- Item Total -->
+            <div class="text-right">
+              <p class="text-sm font-medium text-gray-900">
+                ${{ getItemTotal(item).toFixed(2) }}
+              </p>
+            </div>
+
+            <!-- Remove Button -->
+            <button
+              (click)="removeItem(item)"
+              class="p-1 text-red-500 hover:bg-red-50 rounded-full transition-colors"
+              title="Remove item">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Cart Footer -->
+      <div *ngIf="cart.items.length > 0" class="bg-gray-50 px-6 py-4 border-t border-gray-200">
+
+        <!-- Cart Summary -->
+        <div class="space-y-2 mb-4">
+          <div class="flex justify-between text-sm">
+            <span class="text-gray-600">Subtotal ({{ cart.totalItems }} items):</span>
+            <span class="font-medium">${{ cart.totalPrice.toFixed(2) }}</span>
+          </div>
+          <div class="flex justify-between text-sm">
+            <span class="text-gray-600">Shipping:</span>
+            <span class="font-medium">Free</span>
+          </div>
+          <div class="flex justify-between text-sm">
+            <span class="text-gray-600">Tax:</span>
+            <span class="font-medium">${{ (cart.totalPrice * 0.1).toFixed(2) }}</span>
+          </div>
+          <div class="border-t pt-2">
+            <div class="flex justify-between text-lg font-semibold">
+              <span>Total:</span>
+              <span class="text-red-600">${{ (cart.totalPrice * 1.1).toFixed(2) }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="flex space-x-3">
+          <button
+            (click)="clearCart()"
+            class="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-700 py-2 px-4 rounded-lg transition-colors font-medium">
+            Clear Cart
+          </button>
+          <button
+            (click)="closeCart()"
+            class="flex-1 border border-gray-300 hover:bg-gray-50 text-gray-700 py-2 px-4 rounded-lg transition-colors font-medium">
+            Continue Shopping
+          </button>
+          <button
+            (click)="proceedToCheckout()"
+            class="flex-2 bg-red-500 hover:bg-red-600 text-white py-2 px-6 rounded-lg transition-colors font-medium">
+            Checkout
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
