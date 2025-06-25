@@ -1,6 +1,7 @@
 <div class="min-h-screen bg-gray-50">
   <app-header></app-header>
   <app-navigation></app-navigation>
+  <app-cart-modal></app-cart-modal>
   <main>
       <router-outlet></router-outlet>
       <app-hero-banners *ngIf="!isLoading && !hasError"></app-hero-banners>
@@ -13,7 +14,6 @@
       <p class="text-red-500">{{ errorMessage }}</p>
       <button (click)="retryLoadData()" class="mt-4 bg-blue-600 text-white p-2 rounded-md hover:bg-blue-700">Retry</button>
     </div>
-
   </main>
   <app-footer></app-footer>
 </div>

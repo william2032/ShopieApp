@@ -11,26 +11,21 @@ import { Product } from '../../services/product.service';
 })
 export class ProductCardComponent {
   @Input() product!: Product;
-  @Output() addToCartEvent = new EventEmitter<Product>();
-  @Output() viewDetailsEvent = new EventEmitter<Product>();
+  @Output() addToCart = new EventEmitter<Product>();
+  @Output() viewDetails = new EventEmitter<Product>();
 
-  // Handle image loading errors
-  onImageError(event: any): void {
-    event.target.src = 'https://via.placeholder.com/400x400?text=No+Image';
-  }
-
-  // Add product to cart
-  addToCart(): void {
-    if (this.product.availableStock > 0) {
-      this.addToCartEvent.emit(this.product);
-    }
-  }
-
-  // View product details
-  viewDetails(): void {
-    this.viewDetailsEvent.emit(this.product);
-  }
-
+// // Add product to cart
+//   addToCart(): void {
+//     if (this.product.availableStock > 0) {
+//       this.addToCartEvent.emit(this.product);
+//     }
+//   }
+//
+//   // View product details
+//   viewDetails(): void {
+//     this.viewDetailsEvent.emit(this.product);
+//   }
+//
   // Get stock status text
   getStockStatusText(): string {
     if (this.product.availableStock === 0) {
@@ -43,8 +38,8 @@ export class ProductCardComponent {
       return 'In Stock';
     }
   }
-
-  // Get stock status CSS class
+//
+//   // Get stock status CSS class
   getStockStatusClass(): string {
     if (this.product.availableStock === 0) {
       return 'text-red-600 font-medium';

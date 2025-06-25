@@ -12,6 +12,7 @@ import { FooterComponent } from './components/footer/footer.component';
 import { ProductService, Product } from './services/product.service';
 import { Observable, of } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
+import {CartModalComponent} from './components/cart-modal/cart-modal.component';
 
 interface Category {
   name: string;
@@ -31,7 +32,8 @@ interface Category {
     HotDealComponent,
     TopSellingGridComponent,
     NewsletterComponent,
-    FooterComponent
+    FooterComponent,
+    CartModalComponent
   ],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']

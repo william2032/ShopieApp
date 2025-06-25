@@ -13,17 +13,18 @@
       </button>
     </div>
   </div>
+  <div *ngIf="loading" class="text-center py-4">Loading...</div>
+  <div *ngIf="error" class="text-center py-4 text-red-500">{{ error }}</div>
+  <div *ngIf="!loading && !error && filteredProducts.length === 0" class="text-center py-4">
+    No products available.
+  </div>
 
   <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
     <app-product-card
-      *ngFor="let product of filteredProducts"
-      [product]="product">
+      *ngFor="let product of filteredProducts; trackBy: trackByProductId"
+      [product]="product"
+      (addToCart)="onAddToCart($event)"
+      (viewDetails)="onViewDetails($event)">
     </app-product-card>
-  </div>
-
-  <div class="text-center mt-8">
-    <button class="bg-red-500 hover:bg-red-600 text-white px-8 py-3 rounded-lg font-medium transition-colors">
-      ADD TO CART
-    </button>
   </div>
 </section>

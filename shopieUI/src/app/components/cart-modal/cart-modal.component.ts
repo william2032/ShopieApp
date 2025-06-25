@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, Output, EventEmitter, Input } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import {CommonModule, NgOptimizedImage} from '@angular/common';
 import { Subscription } from 'rxjs';
 import { CartService, Cart, CartItem } from '../../services/cart.service';
 

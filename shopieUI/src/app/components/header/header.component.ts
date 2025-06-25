@@ -3,12 +3,13 @@ import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Cart, CartService} from '../../services/cart.service';
 import {Router} from '@angular/router';
 import {AuthService} from '../../services/auth.service';
-import {NgIf} from '@angular/common';
+import {NgClass, NgIf} from '@angular/common';
+import {CartModalComponent} from '../cart-modal/cart-modal.component';
 
 
 @Component({
   selector: 'app-header',
-  imports: [NgIf],
+  imports: [NgIf, CartModalComponent, NgClass],
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.scss']
 })
@@ -17,6 +18,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   userEmail: string | null = null;
   isLoggedIn: boolean = false;
   cart: Cart = {items: [], totalItems: 0, totalPrice: 0};
+  isCartOpen: boolean = false;
 
   private cartSubscription?: Subscription;
   private userSubscription?: Subscription;
@@ -53,20 +55,19 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   logout(): void {
-    setTimeout(() => {
       this.authService.logout();
-      this.router.navigate(['/']); // Redirect to home after logout
-    }, 2000);
+      this.router.navigate(['/']);
   }
 
   openCart(): void {
-    // Navigate to cart page or open cart modal
-    this.router.navigate(['/cart']);
+    this.isCartOpen = true; // Toggle modal open
+  }
+  closeCart(): void {
+    this.isCartOpen = false;
   }
 
   onSearch(event: Event): void {
     const searchTerm = (event.target as HTMLInputElement).value;
-    // Implement search functionality
     console.log('Searching for:', searchTerm);
   }
 }

@@ -1,9 +1,10 @@
 // src/app/services/product.service.ts
-import { Injectable } from '@angular/core';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { Observable, throwError } from 'rxjs';
-import { catchError, tap, map } from 'rxjs/operators';
-import { environment } from '../../environments/environment';
+import {Injectable} from '@angular/core';
+import {HttpClient, HttpErrorResponse} from '@angular/common/http';
+import {Observable, throwError} from 'rxjs';
+import {catchError, tap, map} from 'rxjs/operators';
+import {environment} from '../../environments/environment';
+import {AuthService} from './auth.service';
 
 export interface Product {
   id: string;
@@ -30,7 +31,8 @@ export interface Product {
 export class ProductService {
   private readonly API_URL = environment.apiUrl;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private authService: AuthService) {
+  }
 
   getProducts(): Observable<Product[]> {
     return this.http.get<{ products: Product[][] }>(`${this.API_URL}/products`).pipe(
@@ -89,6 +91,35 @@ export class ProductService {
       tap(product => console.log('getProductById response:', product)),
       catchError(this.handleError)
     );
+  }
+
+
+  createProduct(product: Product): Observable<Product> {
+    const token = this.authService.getToken();
+    const headers = token ? {Authorization: `Bearer ${token}`} : this.authService.getHttpOptions().headers;
+    product.adminId = this.authService.getCurrentUser()?.id || '';
+    product.createdAt = new Date().toISOString();
+    product.updatedAt = new Date().toISOString();
+    product.availableStock = product.totalStock;
+    product.reservedStock = 0;
+    return this.http.post<Product>(this.API_URL, product, {headers}).pipe(
+      catchError((error) => this.handleError(error))    );
+  }
+
+  deleteProduct(id: string): Observable<void> {
+    const token = this.authService.getToken();
+    const headers = token ? {Authorization: `Bearer ${token}`} : this.authService.getHttpOptions().headers;
+    return this.http.delete<void>(`${this.API_URL}/${id}`, {headers}).pipe(
+      catchError((error) => this.handleError(error)));
+  }
+
+  // Add editProduct method if needed
+  updateProduct(id: string, product: Product): Observable<Product> {
+    const token = this.authService.getToken();
+    const headers = token ? {Authorization: `Bearer ${token}`} : this.authService.getHttpOptions().headers;
+    product.updatedAt = new Date().toISOString();
+    return this.http.put<Product>(`${this.API_URL}/${id}`, product, {headers}).pipe(
+      catchError((error) => this.handleError(error)));
   }
 
   private handleError(error: HttpErrorResponse): Observable<never> {

@@ -59,7 +59,7 @@
     <!-- Price Section -->
     <div class="flex items-center justify-between mb-3">
       <div>
-        <span class="text-lg font-bold text-gray-900">${{ product.price | number:'1.2-2' }}</span>
+        <span class="text-lg font-bold text-gray-900">Ksh{{ product.price | number:'1.2-2' }}</span>
         <span
           *ngIf="product.originalPrice && product.originalPrice > product.price"
           class="text-sm text-gray-500 line-through ml-2">
@@ -91,7 +91,7 @@
     <div class="flex space-x-2">
       <button
         [disabled]="product.availableStock === 0"
-        (click)="addToCart()"
+        (click)="addToCart.emit(product)"
         [class]="product.availableStock === 0 ?
           'w-full bg-gray-400 text-white px-4 py-2 rounded-lg text-sm font-medium cursor-not-allowed' :
           'w-full bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors'">
@@ -99,7 +99,7 @@
       </button>
 
       <button
-        (click)="viewDetails()"
+        (click)="viewDetails.emit(product)"
         class="px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors">
         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>

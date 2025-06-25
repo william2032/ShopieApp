@@ -1,13 +1,14 @@
-import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ProductCardComponent } from '../product-card/product-card.component';
-import {Product} from '../../services/product.service';
+import { Product } from '../../services/product.service';
+import { CartService } from '../../services/cart.service';
+import {Subscription} from 'rxjs'; // Import CartService
 
 interface Category {
   name: string;
   slug: string;
 }
-
 
 @Component({
   selector: 'app-product-section',
@@ -31,28 +32,43 @@ export class ProductSectionComponent {
 
   filteredProducts: Product[] = [];
   selectedCategory = 'all';
-  loading = false; // Set to false since products are passed via input
+  loading = false;
   error: string | null = null;
+  cartError: string | null = null;
+  private cartErrorSub!: Subscription;
 
+  constructor(private cdr: ChangeDetectorRef, private cartService: CartService) {}
+  ngOnInit(): void {
+    this.cartErrorSub = this.cartService.getError().subscribe(error => {
+      this.cartError = error;
+      this.cdr.markForCheck();
+    });
+  }
+
+  ngOnDestroy(): void {
+    this.cartErrorSub.unsubscribe();
+  }
   ngOnChanges(): void {
-    // Ensure products is an array before spreading
+    console.log('ProductSectionComponent products input:', this.products);
     this.filteredProducts = Array.isArray(this.products) ? [...this.products] : [];
     this.selectCategory(this.selectedCategory);
+    this.cdr.markForCheck();
   }
 
   selectCategory(slug: string): void {
     this.selectedCategory = slug;
-    // Ensure products is an array before filtering
     this.filteredProducts = Array.isArray(this.products)
       ? this.products.filter(product =>
         slug === 'all' || product.category?.toLowerCase() === slug.toLowerCase()
       )
       : [];
+    console.log('Filtered products:', this.filteredProducts);
+    this.cdr.markForCheck();
   }
 
   onAddToCart(product: Product): void {
-    console.log(`Added ${product.name} to cart`);
-    // Implement cart logic, e.g., call a CartService
+    console.log(`Adding ${product.name} to cart`);
+    this.cartService.addToCart(product); // Call CartService
   }
 
   onViewDetails(product: Product): void {
