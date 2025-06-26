@@ -15,7 +15,6 @@ import { Router } from '@angular/router';
 export class AdminDashboardComponent implements OnInit, OnDestroy {
   products: Product[] = [];
   newProduct: Product = {
-    id: '',
     name: '',
     description: '',
     price: 0,
@@ -59,7 +58,7 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
 
   editProduct(product: Product): void {
     // Navigate to edit page or open edit form
-    this.router.navigate(['/admin/edit', product.id], { state: { product } });
+    this.router.navigate(['/admin/edit',], { state: { product } });
   }
 
   onImageUpload(event: Event): void {

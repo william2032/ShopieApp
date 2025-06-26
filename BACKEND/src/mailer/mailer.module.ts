@@ -19,7 +19,7 @@ import { MailerService } from './mailer.service';
         },
       },
       defaults: {
-        from: '<no-reply@shopiecustomerservice>',
+        from: '"Shopie Customer Service" <noreply@shopiecustomerservice.com>',
       },
       template: {
         dir: join(process.cwd(), 'src', 'mailer', 'templates'),

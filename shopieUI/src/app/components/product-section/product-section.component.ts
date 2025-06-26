@@ -77,6 +77,6 @@ export class ProductSectionComponent {
   }
 
   trackByProductId(index: number, product: Product): string {
-    return product.id;
+    return product.adminId;
   }
 }
