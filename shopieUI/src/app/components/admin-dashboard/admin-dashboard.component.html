@@ -1,163 +1,275 @@
-<div class="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
-  <div class="container mx-auto p-6 lg:p-8">
-    <!-- Header -->
-    <div class="mb-8">
-      <h2 class="text-4xl font-bold bg-gradient-to-r from-slate-800 to-slate-600 bg-clip-text text-transparent mb-2">
-        Admin Dashboard
-      </h2>
-      <p class="text-slate-600 text-lg">Manage your products with ease</p>
-    </div>
+<div class="admin-dashboard">
+  <div class="container">
+    <h1>Admin Dashboard</h1>
 
-    <!-- Create Product Form -->
-    <div class="mb-10 backdrop-blur-sm bg-white/70 border border-white/20 rounded-2xl shadow-xl shadow-black/5 p-8 hover:shadow-2xl hover:shadow-black/10 transition-all duration-500">
-      <div class="flex items-center mb-6">
-        <div class="w-2 h-8 bg-gradient-to-b from-blue-500 to-indigo-600 rounded-full mr-4"></div>
-        <h3 class="text-2xl font-bold text-slate-800">Add New Product</h3>
-      </div>
-
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div class="space-y-2">
-          <label class="text-sm font-semibold text-slate-700 uppercase tracking-wide">Product Name</label>
+    <!-- Create New Product Section -->
+    <div class="create-product-section">
+      <h2>Create New Product</h2>
+      <form (ngSubmit)="createProduct()" class="product-form">
+        <div class="form-group">
+          <label for="productName">Product Name:</label>
           <input
+            type="text"
+            id="productName"
             [(ngModel)]="newProduct.name"
-            placeholder="Enter product name"
-            class="w-full p-4 bg-white/50 backdrop-blur-sm border border-slate-200/50 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all duration-300 placeholder-slate-400"
-          />
+            name="productName"
+            required
+            placeholder="Enter product name">
         </div>
 
-        <div class="space-y-2">
-          <label class="text-sm font-semibold text-slate-700 uppercase tracking-wide">Description</label>
-          <input
+        <div class="form-group">
+          <label for="productDescription">Description:</label>
+          <textarea
+            id="productDescription"
             [(ngModel)]="newProduct.description"
-            placeholder="Product description"
-            class="w-full p-4 bg-white/50 backdrop-blur-sm border border-slate-200/50 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all duration-300 placeholder-slate-400"
-          />
+            name="productDescription"
+            required
+            placeholder="Enter product description"
+            rows="4"></textarea>
         </div>
 
-        <div class="space-y-2">
-          <label class="text-sm font-semibold text-slate-700 uppercase tracking-wide">Price</label>
+        <div class="form-group">
+          <label for="productPrice">Price ($):</label>
           <input
+            type="number"
+            id="productPrice"
             [(ngModel)]="newProduct.price"
-            type="number"
-            placeholder="0.00"
-            class="w-full p-4 bg-white/50 backdrop-blur-sm border border-slate-200/50 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all duration-300 placeholder-slate-400"
-          />
+            name="productPrice"
+            required
+            min="0"
+            step="0.01"
+            placeholder="0.00">
         </div>
 
-        <div class="space-y-2">
-          <label class="text-sm font-semibold text-slate-700 uppercase tracking-wide">Total Stock</label>
+        <div class="form-group">
+          <label for="productStock">Total Stock:</label>
           <input
-            [(ngModel)]="newProduct.totalStock"
             type="number"
-            placeholder="Quantity"
-            class="w-full p-4 bg-white/50 backdrop-blur-sm border border-slate-200/50 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all duration-300 placeholder-slate-400"
-          />
+            id="productStock"
+            [(ngModel)]="newProduct.totalStock"
+            name="productStock"
+            required
+            min="0"
+            placeholder="0">
         </div>
 
-        <div class="space-y-2 md:col-span-2">
-          <label class="text-sm font-semibold text-slate-700 uppercase tracking-wide">Product Image</label>
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div class="relative">
-              <input
-                type="file"
-                id="imageUpload"
-                (change)="onImageUpload($event)"
-                accept="image/*"
-                class="w-full p-4 bg-white/50 backdrop-blur-sm border border-slate-200/50 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all duration-300 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
-              />
-            </div>
-            <input
-              [(ngModel)]="newProduct.image"
-              placeholder="Or paste image URL"
-              class="w-full p-4 bg-white/50 backdrop-blur-sm border border-slate-200/50 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all duration-300 placeholder-slate-400"
-            />
-          </div>
-        </div>
-
-        <div class="space-y-2">
-          <label class="text-sm font-semibold text-slate-700 uppercase tracking-wide">Category</label>
+        <div class="form-group">
+          <label for="productCategory">Category:</label>
           <select
+            id="productCategory"
             [(ngModel)]="newProduct.category"
-            class="w-full p-4 bg-white/50 backdrop-blur-sm border border-slate-200/50 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all duration-300"
-          >
-            <option value="" disabled>Select Category</option>
-            <option value="laptops">💻 Laptops</option>
-            <option value="smartphones">📱 Smartphones</option>
-            <option value="cameras">📷 Cameras</option>
+            name="productCategory">
+            <option value="laptops">Laptops</option>
+            <option value="phones">Phones</option>
+            <option value="tablets">Tablets</option>
+            <option value="accessories">Accessories</option>
           </select>
         </div>
-      </div>
 
-      <button
-        (click)="createProduct()"
-        class="mt-8 bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-8 py-4 rounded-xl font-semibold hover:from-blue-700 hover:to-indigo-700 transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl"
-      >
-        Create Product
-      </button>
+        <div class="form-group">
+          <label>Product Image:</label>
+
+          <!-- Image Type Toggle -->
+          <div class="image-type-toggle">
+            <button
+              type="button"
+              class="toggle-btn"
+              [class.active]="newProductImageType === 'upload'"
+              (click)="toggleNewProductImageType('upload')">
+              Upload File
+            </button>
+            <button
+              type="button"
+              class="toggle-btn"
+              [class.active]="newProductImageType === 'url'"
+              (click)="toggleNewProductImageType('url')">
+              Image URL
+            </button>
+          </div>
+
+          <!-- File Upload Option -->
+          <div *ngIf="newProductImageType === 'upload'" class="image-input-section">
+            <input
+              type="file"
+              id="productImage"
+              (change)="onNewProductImageUpload($event)"
+              accept="image/*"
+              class="file-input">
+          </div>
+
+          <!-- URL Input Option -->
+          <div *ngIf="newProductImageType === 'url'" class="image-input-section">
+            <input
+              type="url"
+              [(ngModel)]="newProduct.image"
+              name="productImageUrl"
+              placeholder="Enter image URL (e.g., https://example.com/image.jpg)"
+              class="url-input"
+              (input)="onImageUrlChange($event)">
+            <small class="url-hint">Enter a direct link to an image file</small>
+          </div>
+
+          <!-- Image Preview -->
+          <div *ngIf="newProduct.image" class="image-preview">
+            <img [src]="newProduct.image" alt="Product preview" class="preview-img">
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Create Product</button>
+      </form>
     </div>
 
-    <!-- Product List -->
-    <div class="backdrop-blur-sm bg-white/70 border border-white/20 rounded-2xl shadow-xl shadow-black/5 p-8 hover:shadow-2xl hover:shadow-black/10 transition-all duration-500">
-      <div class="flex items-center justify-between mb-8">
-        <div class="flex items-center">
-          <div class="w-2 h-8 bg-gradient-to-b from-emerald-500 to-teal-600 rounded-full mr-4"></div>
-          <h3 class="text-2xl font-bold text-slate-800">Product Inventory</h3>
-        </div>
-        <div class="bg-slate-100 px-4 py-2 rounded-full">
-          <span class="text-sm font-semibold text-slate-600">{{ products.length || 0 }} Products</span>
-        </div>
+    <!-- Products List Section -->
+    <div class="products-section">
+      <h2>Manage Products</h2>
+      <div *ngIf="products.length === 0" class="no-products">
+        <p>No products found. Create your first product above.</p>
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-        <div
-          *ngFor="let product of products"
-          class="group backdrop-blur-sm bg-white/60 border border-white/30 rounded-xl p-6 hover:bg-white/80 hover:shadow-lg hover:shadow-black/10 hover:-translate-y-1 transition-all duration-300"
-        >
-          <div class="mb-4">
-            <h4 class="font-bold text-lg text-slate-800 mb-2 group-hover:text-blue-600 transition-colors duration-300">
-              {{ product.name }}
-            </h4>
-            <p class="text-slate-600 text-sm leading-relaxed mb-3">{{ product.description }}</p>
-
-            <div class="space-y-2">
-              <div class="flex items-center justify-between">
-                <span class="text-sm font-medium text-slate-500">Price</span>
-                <span class="text-lg font-bold text-emerald-600">${{ product.price }}</span>
-              </div>
-
-              <div class="flex items-center justify-between">
-                <span class="text-sm font-medium text-slate-500">Stock</span>
-                <span class="px-2 py-1 rounded-full text-xs font-semibold"
-                      [class]="product.totalStock > 10 ? 'bg-emerald-100 text-emerald-700' : product.totalStock > 0 ? 'bg-amber-100 text-amber-700' : 'bg-red-100 text-red-700'">
-                  {{ product.totalStock }}
-                </span>
-              </div>
-            </div>
+      <div *ngIf="products.length > 0" class="products-grid">
+        <div *ngFor="let product of products" class="product-card">
+          <div class="product-image">
+            <img [src]="product.image" [alt]="product.name" class="product-img">
           </div>
-
-          <div class="flex gap-2 pt-4 border-t border-slate-200/50">
-            <button
-              (click)="editProduct(product)"
-              class="flex-1 bg-gradient-to-r from-amber-500 to-orange-500 text-white px-3 py-2 rounded-lg text-sm font-medium hover:from-amber-600 hover:to-orange-600 transform hover:scale-105 transition-all duration-200 shadow-sm hover:shadow-md"
-            >
-              Edit
-            </button>
-            <button
-              (click)="deleteProduct(product.adminId)"
-              class="flex-1 bg-gradient-to-r from-red-500 to-pink-500 text-white px-3 py-2 rounded-lg text-sm font-medium hover:from-red-600 hover:to-pink-600 transform hover:scale-105 transition-all duration-200 shadow-sm hover:shadow-md"
-            >
-              Delete
-            </button>
+          <div class="product-info">
+            <h3>{{ product.name }}</h3>
+            <p class="product-description">{{ product.description }}</p>
+            <p class="product-price">Ksh{{ product.price | number:'1.2-2' }}</p>
+            <p class="product-stock">Stock: {{ product.totalStock }}</p>
+            <p class="product-category">Category: {{ product.category }}</p>
+          </div>
+          <div class="product-actions">
+            <button (click)="editProduct(product)" class="btn btn-secondary">Edit</button>
+            <button (click)="deleteProduct(product)" class="btn btn-danger">Delete</button>
           </div>
         </div>
       </div>
+    </div>
+  </div>
 
-      <!-- Empty State -->
-      <div *ngIf="!products || products.length === 0" class="text-center py-16">
-        <div class="text-6xl mb-4">📦</div>
-        <h4 class="text-2xl font-bold text-slate-700 mb-2">No Products Yet</h4>
-        <p class="text-slate-500">Start by adding your first product above</p>
+  <!-- Edit Product Modal -->
+  <div *ngIf="isEditModalOpen" class="modal-overlay" (click)="closeEditModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h2>Edit Product</h2>
+        <button class="close-btn" (click)="closeEditModal()">&times;</button>
       </div>
+
+      <form (ngSubmit)="updateProduct()" class="product-form">
+        <div class="form-group">
+          <label for="editProductName">Product Name:</label>
+          <input
+            type="text"
+            id="editProductName"
+            [(ngModel)]="editingProduct.name"
+            name="editProductName"
+            required
+            placeholder="Enter product name">
+        </div>
+
+        <div class="form-group">
+          <label for="editProductDescription">Description:</label>
+          <textarea
+            id="editProductDescription"
+            [(ngModel)]="editingProduct.description"
+            name="editProductDescription"
+            required
+            placeholder="Enter product description"
+            rows="4"></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="editProductPrice">Price ($):</label>
+          <input
+            type="number"
+            id="editProductPrice"
+            [(ngModel)]="editingProduct.price"
+            name="editProductPrice"
+            required
+            min="0"
+            step="0.01"
+            placeholder="0.00">
+        </div>
+
+        <div class="form-group">
+          <label for="editProductStock">Total Stock:</label>
+          <input
+            type="number"
+            id="editProductStock"
+            [(ngModel)]="editingProduct.totalStock"
+            name="editProductStock"
+            required
+            min="0"
+            placeholder="0">
+        </div>
+
+        <div class="form-group">
+          <label for="editProductCategory">Category:</label>
+          <select
+            id="editProductCategory"
+            [(ngModel)]="editingProduct.category"
+            name="editProductCategory">
+            <option value="laptops">Laptops</option>
+            <option value="phones">Phones</option>
+            <option value="tablets">Tablets</option>
+            <option value="accessories">Accessories</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Product Image:</label>
+
+          <!-- Image Type Toggle -->
+          <div class="image-type-toggle">
+            <button
+              type="button"
+              class="toggle-btn"
+              [class.active]="editProductImageType === 'upload'"
+              (click)="toggleEditProductImageType('upload')">
+              Upload File
+            </button>
+            <button
+              type="button"
+              class="toggle-btn"
+              [class.active]="editProductImageType === 'url'"
+              (click)="toggleEditProductImageType('url')">
+              Image URL
+            </button>
+          </div>
+
+          <!-- File Upload Option -->
+          <div *ngIf="editProductImageType === 'upload'" class="image-input-section">
+            <input
+              type="file"
+              id="editProductImage"
+              (change)="onEditProductImageUpload($event)"
+              accept="image/*"
+              class="file-input">
+          </div>
+
+          <!-- URL Input Option -->
+          <div *ngIf="editProductImageType === 'url'" class="image-input-section">
+            <input
+              type="url"
+              [(ngModel)]="editingProduct.image"
+              name="editProductImageUrl"
+              placeholder="Enter image URL (e.g., https://example.com/image.jpg)"
+              class="url-input"
+              (input)="onImageUrlChange($event)">
+            <small class="url-hint">Enter a direct link to an image file</small>
+          </div>
+
+          <!-- Image Preview -->
+          <div *ngIf="editingProduct.image" class="image-preview">
+            <img [src]="editingProduct.image" alt="Product preview" class="preview-img">
+          </div>
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" (click)="closeEditModal()" class="btn btn-secondary">Cancel</button>
+          <button type="submit" class="btn btn-primary">Update Product</button>
+        </div>
+      </form>
     </div>
   </div>
 </div>

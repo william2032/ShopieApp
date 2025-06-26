@@ -29,15 +29,13 @@ export class AuthComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
 
   // Form modes
-  currentMode: 'login' | 'register' | 'forgot-password' | 'reset-password' = 'login';
+  currentMode: string | null = 'login';
 
   // Forms
   loginForm!: FormGroup;
   registerForm!: FormGroup;
   forgotPasswordForm!: FormGroup;
   resetPasswordForm!: FormGroup;
-
-
 
   // State
   isLoading = false;
@@ -57,7 +55,7 @@ export class AuthComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     //Read mode from route data
     this.route.data.subscribe(data => {
-      const mode = data['mode'] as 'login' | 'register' | 'forgot-password' | 'reset-password';
+      const mode = data['mode'] as 'login' | 'register' | 'forgot-password' | 'reset-password' ;
       if (mode) {
         this.currentMode = mode;
       }
@@ -113,22 +111,34 @@ export class AuthComponent implements OnInit, OnDestroy {
   // Mode switching methods
   switchToLogin(): void {
     this.currentMode = 'login';
+    this.router.navigate(['/login']);
     this.clearMessages();
   }
 
   switchToRegister(): void {
     this.currentMode = 'register';
+    this.router.navigate(['/register']);
     this.clearMessages();
   }
 
   switchToForgotPassword(): void {
     this.currentMode = 'forgot-password';
+    this.router.navigate(['/forgot-password']);
     this.clearMessages();
   }
 
   switchToResetPassword(): void {
     this.currentMode = 'reset-password';
+    this.router.navigate(['/reset-password']);
     this.clearMessages();
+  }
+  onClose() {
+    this.currentMode = null;
+    this.router.navigate(['/']);
+    this.loginForm.reset(); // Reset forms
+    this.registerForm.reset();
+    this.forgotPasswordForm.reset();
+    this.resetPasswordForm.reset();
   }
 
   // Form submission methods
