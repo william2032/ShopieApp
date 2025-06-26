@@ -1,6 +1,7 @@
 import {
   IsNotEmpty,
   IsNumber,
+  IsOptional,
   IsPositive,
   IsString,
   IsUrl,
@@ -21,12 +22,17 @@ export class CreateProductDto {
   @IsPositive()
   price: number;
 
+  @IsString()
+  @IsOptional()
+  category?: string;
+
   @IsNotEmpty()
   @IsUrl()
   image: string;
 
   @IsNotEmpty()
   @IsNumber()
+  @IsOptional()
   @Min(0)
   totalStock: number;
 }

@@ -1,9 +1,9 @@
 <div class="min-h-screen bg-gray-50">
   <app-header></app-header>
-  <app-navigation></app-navigation>
   <app-cart-modal></app-cart-modal>
   <main>
     <router-outlet></router-outlet>
+    <app-navigation></app-navigation>
     <!-- Render default content only on root path -->
     <app-hero-banners *ngIf="isDefaultRoute && !isLoading && !hasError"></app-hero-banners>
     <app-product-section *ngIf="isDefaultRoute && !isLoading && !hasError" title="NEW PRODUCTS" [products]="newProducts" [categories]="productCategories"></app-product-section>

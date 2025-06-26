@@ -140,7 +140,7 @@ export class ProductsComponent implements OnInit, OnDestroy {
 
   // Track function for ngFor performance
   trackByProductId(index: number, product: Product): string {
-    return product.id;
+    return product.adminId;
   }
 
   // Handle add to cart event from product card

@@ -7,7 +7,6 @@ import {environment} from '../../environments/environment';
 import {AuthService} from './auth.service';
 
 export interface Product {
-  id: string;
   name: string;
   description: string;
   price: number;
@@ -36,7 +35,13 @@ export class ProductService {
 
   getProducts(): Observable<Product[]> {
     return this.http.get<{ products: Product[][] }>(`${this.API_URL}/products`).pipe(
-      map(response => response.products[0] || []),
+      map(response => {
+        // Handle both array of arrays and simple array responses
+        if (Array.isArray(response)) {
+          return response as Product[];
+        }
+        return response.products?.[0] || response.products || [];
+      }),
       tap(products => console.log('getProducts processed:', products)),
       catchError(this.handleError)
     );
@@ -45,9 +50,18 @@ export class ProductService {
   getNewProducts(): Observable<Product[]> {
     return this.http.get<{ products: Product[][] }>(`${this.API_URL}/products`).pipe(
       map(response => {
-        const products = response.products[0] || [];
+        let products: Product[] = [];
+
+        // Handle different response formats
+        if (Array.isArray(response)) {
+          products = response as Product[];
+        } else {
+          products = response.products?.[0] || response.products || [];
+        }
+
         const sevenDaysAgo = new Date();
         sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+
         return products
           .map(product => ({
             ...product,
@@ -64,7 +78,15 @@ export class ProductService {
   getTopSellingProducts(): Observable<Product[]> {
     return this.http.get<{ products: Product[][] }>(`${this.API_URL}/products`).pipe(
       map(response => {
-        const products = response.products[0] || [];
+        let products: Product[] = [];
+
+        // Handle different response formats
+        if (Array.isArray(response)) {
+          products = response as Product[];
+        } else {
+          products = response.products?.[0] || response.products || [];
+        }
+
         return products
           .map(product => ({
             ...product,
@@ -79,8 +101,15 @@ export class ProductService {
   }
 
   getAllProducts(): Observable<Product[]> {
-    return this.http.get<{ products: Product[][] }>(`${this.API_URL}//products/all`).pipe(
-      map(response => response.products[0] || []),
+    // Fixed: Removed double slash in URL
+    return this.http.get<{ products: Product[][] }>(`${this.API_URL}/products/all`).pipe(
+      map(response => {
+        // Handle different response formats
+        if (Array.isArray(response)) {
+          return response as Product[];
+        }
+        return response.products?.[0] || response.products || [];
+      }),
       tap(products => console.log('getAllProducts processed:', products)),
       catchError(this.handleError)
     );
@@ -93,43 +122,92 @@ export class ProductService {
     );
   }
 
-
+  // FIXED: This was the main issue - POST to correct endpoint
   createProduct(product: Product): Observable<Product> {
     const token = this.authService.getToken();
     const headers = token ? {Authorization: `Bearer ${token}`} : this.authService.getHttpOptions().headers;
+
+    // Set default values
     product.adminId = this.authService.getCurrentUser()?.id || '';
     product.createdAt = new Date().toISOString();
     product.updatedAt = new Date().toISOString();
     product.availableStock = product.totalStock;
     product.reservedStock = 0;
-    return this.http.post<Product>(this.API_URL, product, {headers}).pipe(
-      catchError((error) => this.handleError(error))    );
+
+    // FIXED: POST to /products endpoint instead of root
+    return this.http.post<Product>(`${this.API_URL}/products`, product, {headers}).pipe(
+      tap(response => console.log('createProduct response:', response)),
+      catchError((error) => this.handleError(error))
+    );
   }
 
   deleteProduct(id: string): Observable<void> {
     const token = this.authService.getToken();
     const headers = token ? {Authorization: `Bearer ${token}`} : this.authService.getHttpOptions().headers;
+
     return this.http.delete<void>(`${this.API_URL}/products/${id}`, {headers}).pipe(
-      catchError((error) => this.handleError(error)));
+      tap(() => console.log('deleteProduct successful for id:', id)),
+      catchError((error) => this.handleError(error))
+    );
   }
 
-  // Add editProduct method if needed
   updateProduct(id: string, product: Product): Observable<Product> {
     const token = this.authService.getToken();
     const headers = token ? {Authorization: `Bearer ${token}`} : this.authService.getHttpOptions().headers;
+
     product.updatedAt = new Date().toISOString();
+
     return this.http.put<Product>(`${this.API_URL}/products/${id}`, product, {headers}).pipe(
-      catchError((error) => this.handleError(error)));
+      tap(response => console.log('updateProduct response:', response)),
+      catchError((error) => this.handleError(error))
+    );
+  }
+
+  // Additional helper methods for better error handling and debugging
+
+  testConnection(): Observable<any> {
+    return this.http.get(`${this.API_URL}/health`).pipe(
+      tap(response => console.log('Health check response:', response)),
+      catchError(this.handleError)
+    );
   }
 
   private handleError(error: HttpErrorResponse): Observable<never> {
     let errorMessage = 'An error occurred';
-    console.error('API error:', error);
+    console.error('API error details:', {
+      status: error.status,
+      statusText: error.statusText,
+      url: error.url,
+      message: error.message,
+      error: error.error
+    });
+
     if (error.error instanceof ErrorEvent) {
-      errorMessage = `Error: ${error.error.message}`;
+      // Client-side error
+      errorMessage = `Client Error: ${error.error.message}`;
     } else {
-      errorMessage = `Error Code: ${error.status}: ${error.message}`;
+      // Server-side error
+      switch (error.status) {
+        case 0:
+          errorMessage = 'Cannot connect to server. Please check if the backend is running.';
+          break;
+        case 404:
+          errorMessage = `Endpoint not found: ${error.url}. Please check your API configuration.`;
+          break;
+        case 401:
+          errorMessage = 'Unauthorized. Please check your authentication.';
+          break;
+        case 403:
+          errorMessage = 'Forbidden. You do not have permission to perform this action.';
+          break;
+        case 500:
+          errorMessage = 'Internal server error. Please try again later.';
+          break;
+        default:
+          errorMessage = `Server Error ${error.status}: ${error.message}`;
+      }
     }
+
     return throwError(() => new Error(errorMessage));
   }
 }

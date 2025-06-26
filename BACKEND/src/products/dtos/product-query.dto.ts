@@ -1,10 +1,4 @@
-import {
-  IsOptional,
-  IsString,
-  IsNumber,
-  IsIn,
-  Min,
-} from 'class-validator';
+import { IsOptional, IsString, IsNumber, IsIn, Min } from 'class-validator';
 import { Type } from 'class-transformer';
 
 export class ProductQueryDto {
