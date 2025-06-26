@@ -1,29 +1,41 @@
 <!-- Main Authentication Container -->
 <div class="max-h-screen bg-gray-50 flex flex-col justify-start py-12 sm:px-6 lg:px-8">
-    <div class="absolute inset-0 bg-white/50 backdrop-blur-sm z-10" *ngIf="currentMode"></div>
-    <!-- Header Section -->
-    <div class="sm:mx-auto sm:w-full sm:max-w-md">
+    <div class="absolute inset-0 bg-white/50 backdrop-blur-sm z-10" *ngIf="currentMode">
+      <!-- Header Section -->
+      <div class="sm:mx-auto sm:w-full sm:max-w-md justify-center">
         <div class="text-center">
-            <h1 class="text-3xl font-bold text-gray-900 mb-2">Shopie</h1>
-            <h2 class="text-xl font-semibold text-gray-700" [ngSwitch]="currentMode">
-                <span *ngSwitchCase="'login'">Sign in to your account</span>
-                <span *ngSwitchCase="'register'">Create your account</span>
-                <span *ngSwitchCase="'forgot-password'">Reset your password</span>
-                <span *ngSwitchCase="'reset-password'">Set new password</span>
-            </h2>
-            <p class="mt-2 text-sm text-gray-600" [ngSwitch]="currentMode">
-                <span *ngSwitchCase="'login'">Welcome back! Please sign in to continue shopping.</span>
-                <span *ngSwitchCase="'register'">Join us to start your shopping experience.</span>
-                <span *ngSwitchCase="'forgot-password'">Enter your email to receive a reset link.</span>
-                <span *ngSwitchCase="'reset-password'">Enter your new password below.</span>
-            </p>
+          <h1 class="text-[55px] font-bold tracking-widest  text-grey-900 mb-2">Shopie</h1>
+          <h2 class="text-[29px] font-semibold text-gray-500" [ngSwitch]="currentMode">
+            <span *ngSwitchCase="'login'">Sign in to your account</span>
+            <span *ngSwitchCase="'register'">Create your account</span>
+            <span *ngSwitchCase="'forgot-password'">Reset your password</span>
+            <span *ngSwitchCase="'reset-password'">Set new password</span>
+          </h2>
+          <p class="mt-2 text-[15px] text-gray-400" [ngSwitch]="currentMode">
+            <span *ngSwitchCase="'login'">Welcome back! Please sign in to continue shopping.</span>
+            <span *ngSwitchCase="'register'">Join us to start your shopping experience.</span>
+            <span *ngSwitchCase="'forgot-password'">Enter your email to receive a reset link.</span>
+            <span *ngSwitchCase="'reset-password'">Enter your new password below.</span>
+          </p>
         </div>
+      </div>
     </div>
+
 
     <!-- Form Container -->
     <div class="relative z-20 mt-8 sm:mx-auto sm:w-full sm:max-w-md">
         <div class="bg-white py-8 px-4 shadow-lg sm:rounded-lg sm:px-10 border">
-
+          <div class="absolute top-4 right-4">
+            <button
+              type="button"
+              (click)="onClose()"
+              class="text-gray-400 hover:text-gray-600 focus:outline-none"
+              aria-label="Close form">
+              <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
             <!-- Success Message -->
             <div *ngIf="successMessage" class="mb-4 p-4 bg-green-50 border border-green-200 rounded-md">
                 <div class="flex">

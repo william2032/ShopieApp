@@ -1,4 +1,3 @@
-// src/app/services/product.service.ts
 import {Injectable} from '@angular/core';
 import {HttpClient, HttpErrorResponse} from '@angular/common/http';
 import {Observable, throwError} from 'rxjs';
@@ -7,6 +6,7 @@ import {environment} from '../../environments/environment';
 import {AuthService} from './auth.service';
 
 export interface Product {
+  id?: string;
   name: string;
   description: string;
   price: number;
@@ -122,7 +122,6 @@ export class ProductService {
     );
   }
 
-  // FIXED: This was the main issue - POST to correct endpoint
   createProduct(product: Product): Observable<Product> {
     const token = this.authService.getToken();
     const headers = token ? {Authorization: `Bearer ${token}`} : this.authService.getHttpOptions().headers;
@@ -134,7 +133,6 @@ export class ProductService {
     product.availableStock = product.totalStock;
     product.reservedStock = 0;
 
-    // FIXED: POST to /products endpoint instead of root
     return this.http.post<Product>(`${this.API_URL}/products`, product, {headers}).pipe(
       tap(response => console.log('createProduct response:', response)),
       catchError((error) => this.handleError(error))
@@ -157,7 +155,7 @@ export class ProductService {
 
     product.updatedAt = new Date().toISOString();
 
-    return this.http.put<Product>(`${this.API_URL}/products/${id}`, product, {headers}).pipe(
+    return this.http.patch<Product>(`${this.API_URL}/products/${id}`, product, {headers}).pipe(
       tap(response => console.log('updateProduct response:', response)),
       catchError((error) => this.handleError(error))
     );
